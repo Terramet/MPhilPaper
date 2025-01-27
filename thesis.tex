@@ -1,0 +1,79 @@
+% ******************************* Sheffield Hallam University PhD/MPhil Template **************************
+\documentclass[a4paper,12pt,oneside,numbered,PageStyleIII,print,index,custommargin]{PhDThesisPSnPDF}
+\input{preamble}
+
+% ************************ Thesis Information & Meta-data **********************
+% Thesis title and author information, refernce file for biblatex
+\input{thesis-info}
+
+% ******************************** Front Matter ********************************
+\begin{document}
+
+\frontmatter
+
+\maketitle
+\include{abstract}
+\include{declaration}
+\include{acknowledgement}
+
+% *********************** Adding TOC and List of Figures ***********************
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+% \printnomenclature[space] space can be set as 2em between symbol and description
+%\printnomenclature[3em]
+
+%\printnomenclature
+
+% ******************************** Main Matter *********************************
+\mainmatter
+
+\include{Ch1-Intro}
+\include{ch2-lit}
+\include{ch3-m&m}
+\include{ch4-fed}
+\include{ch5-aed}
+%\include{ch6-os}
+\include{ch7-conc}
+%\include{Chapter8/chapter8}
+
+
+
+% ********************************** Back Matter *******************************
+% Backmatter should be commented out, if you are using appendices after References
+%\backmatter
+
+
+% ********************************** Bibliography ******************************
+\begin{spacing}{0.9}
+
+
+\bibliography{bibliography} % Path to your References.bib file
+\bibliographystyle{apalike}
+%\bibliographystyle{ieeetr} % Use for unsorted references  
+%\bibliographystyle{plainnat} % use this to have URLs listed in References
+\cleardoublepage
+
+\end{spacing}
+
+% ********************************** Appendices ********************************
+
+\begin{appendices} % Using appendices environment for more functionality
+
+% Reset page numbering for appendices
+\clearpage
+\pagenumbering{arabic}  % Reset numbering to arabic
+\setcounter{page}{1}     % Reset page counter to 1
+
+\include{Appendix1/appendix1}
+%\include{Appendix2/appendix2}
+%\include{Appendix3/appendix3}
+%\include{Appendix4/appendix4}
+
+\end{appendices}
+
+% *************************************** Index ********************************
+%\printthesisindex % If index is present
+\end{document}
