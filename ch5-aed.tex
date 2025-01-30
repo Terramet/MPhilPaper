@@ -15,7 +15,7 @@ Ultimately, the choice to use cloud-based emotion recognition is a strategic dec
 Initially, a system was created to incorporate IBM Watson as a chatbot to inform people about ongoing public health issues. The goal was to provide accurate and up-to-date responses to common questions and to give people peace of mind. The system was designed to use IBM’s sentiment analysis to detect fear and point people to resources that could help them. In addition, the chatbot provided the ability to connect an Aldebaran robot, which provided a physical presence that people could interact with. The robot would use its microphones to pick up user speech, which could then be sent to IBM for analysis, after which the robot would respond with what IBM Watson sent back. 
 
 \begin{figure}[!htb]
-    \centering 
+    \centering{}
     \includegraphics[scale=0.25]{aed_images/nao_with_chatbot.png}
     \caption{Aldebaran robot Nao with IBM Watson ChatBot}
     \label{figure:naochatbot}
@@ -43,7 +43,7 @@ The system could also leverage locally run language models, such as GPT4All, to 
 
 \section{OpenSMILE}
 
-OpenSMILE \cite{opensmile-2010}, which stands for "Open-Source Speech and Music Interpretation by Large-Space Extraction", is a powerful open-source toolkit widely used in audio signal processing. Its primary function is to extract an extensive range of acoustic features from audio signals, providing a versatile platform for various applications that include speech recognition, emotion recognition, speaker identification, and music analysis. One of the key strengths of OpenSMILE lies in its modular architecture, which allows the customisation of the feature extraction process to suit specific requirements. This modularity is achieved through a collection of feature extraction components known as "functionals," each responsible for computing a particular set of features. It is possible to choose from a rich library of functionals and combine them as needed to create tailored feature sets.
+OpenSMILE \cite{opensmile-2010}, which stands for ``Open-Source Speech and Music Interpretation by Large-Space Extraction'' is a powerful open-source toolkit widely used in audio signal processing. Its primary function is to extract an extensive range of acoustic features from audio signals, providing a versatile platform for various applications that include speech recognition, emotion recognition, speaker identification, and music analysis. One of the key strengths of OpenSMILE lies in its modular architecture, which allows the customisation of the feature extraction process to suit specific requirements. This modularity is achieved through a collection of feature extraction components known as ``functionals'' each responsible for computing a particular set of features. It is possible to choose from a rich library of functionals and combine them as needed to create tailored feature sets.
 
 Moreover, OpenSMILE is designed for real-time processing of audio streams, making it suitable for applications that demand low-latency feature extraction, such as real-time speech recognition systems or interactive multimedia applications. Its cross-platform compatibility ensures that it can seamlessly integrate into various environments running on major operating systems, including Windows, macOS, and Linux. Additionally, the toolkit offers extensive configuration options that allow one to specify parameters such as frame size, overlap, and feature selection, thus providing flexibility to adapt to various audio processing tasks.
 
@@ -54,7 +54,7 @@ OpenSMILE facilitates the integration of extracted features with machine learnin
 In this section, the performance of IBM Watson's Natural Language Understanding (NLU) service is evaluated in analysing the emotional content of various phrases. To ensure a robust assessment, each phrase was tested five times, and response times were recorded. The table \ref{tab:phrase_tests} presents the response times (in seconds) for each test run with ten different phrases shown in \ref{tab:phrases_emotions}.
 
 \begin{table}[h!]
-\centering
+\centering{}
 \caption{Phrases and their expected emotions}
 \begin{tabular}{|p{9cm}|c|}
 \hline
@@ -72,10 +72,10 @@ The food at that restaurant was absolutely disgusting. The meat was undercooked,
 \end{tabular}
 \label{tab:phrases_emotions}
 \end{table}
-\clearpage
+\clearpage{}
 
 \begin{table}[h!]
-\centering
+\centering{}
 \caption{Test results for IBM Watson's response times on 10 phrases across 5 runs in seconds, alongside the average time and standard deviation. The phrases in this table match the phrases in table \ref{tab:phrases_emotions} in order.}
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
@@ -97,7 +97,7 @@ The food at that restaurant was absolutely disgusting. The meat was undercooked,
 IBM Watson NLU demonstrates efficient and consistent performance in emotion analysis, with response times typically under one second for any given phrase. However, there is a noticeable delay for the first phrase of each session, likely due to the system establishing an initial connection to IBM Watson. To investigate this, five additional tests were conducted with the phrases in reverse order. The first, more complex, phrase took an average of 1.3601 seconds to process, while subsequent phrases averaged just 0.3713 seconds. This indicates that the first phrase consistently experiences a longer response time. To optimise performance, it would be beneficial for the program to send a throwaway phrase to minimise delays for subsequent inputs.
 
 \begin{table}[h!]
-\centering
+\centering{}
 \caption{The resulting output probability for each emotion for each phrase. The phrases in this table match the phrases in table \ref{tab:phrases_emotions} in order.}
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
@@ -126,10 +126,10 @@ This section also provides an overview of the key differences among three langua
 
 \subsection{GPT-3.5-turbo}
 
-ChatGPT 3.5-turbo is based on the GPT-3.5 engine, which was trained on over 175 billion parameters. While it represents a significant advancement in natural language processing, it has notable downsides. One major issue is its accuracy and reliability; ChatGPT 3.5 is more prone to 'hallucinations', which means it can generate incorrect or non-sensical information, especially when faced with ambiguous queries. These limitations can lead to inappropriate outputs, which may affect user trust and satisfaction. Despite these challenges, ChatGPT 3.5-turbo remains effective for many applications, such as basic content generation and straightforward chatbot interactions.
+ChatGPT 3.5-turbo is based on the GPT-3.5 engine, which was trained on over 175 billion parameters. While it represents a significant advancement in natural language processing, it has notable downsides. One major issue is its accuracy and reliability; ChatGPT 3.5 is more prone to `hallucinations', which means it can generate incorrect or non-sensical information, especially when faced with ambiguous queries. These limitations can lead to inappropriate outputs, which may affect user trust and satisfaction. Despite these challenges, ChatGPT 3.5-turbo remains effective for many applications, such as basic content generation and straightforward chatbot interactions.
 
 \begin{table}[h!]
-\centering
+\centering{}
 \caption{Test results for GPT-3.5-turbo response times over 10 phrases, alongside the average time and standard deviation. The phrases in this table match the phrases in table \ref{tab:phrases_emotions} in order.}
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
@@ -157,7 +157,7 @@ Interestingly, certain phrases such as Phrase 3 and Phrase 7 also show a marked 
 GPT-4o is the full-fledged version of the GPT-4 architecture, representing a significant upgrade over GPT-3.5-turbo. This model features enhanced accuracy and reliability, being trained on more than a trillion parameters, which allows it to generate more precise responses and significantly reduce the likelihood of hallucinations. GPT-4o excels at understanding nuanced contexts and producing coherent, contextually appropriate text. In addition, it is designed for complex tasks that require high computational power, making it suitable for applications in industries such as finance, healthcare, and research, where precision and depth are crucial.
 
 \begin{table}[h!]
-\centering
+\centering{}
 \caption{Test results for GPT-4o response times over 10 phrases, alongside the average time and standard deviation. The phrases in this table match the phrases in table \ref{tab:phrases_emotions} in order.}
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
@@ -185,7 +185,7 @@ Phrase 5 sees a large jump in SD because one run takes 5.37 seconds to get a res
 GPT-4o Mini is a compact and efficient version of GPT-4o that balances performance with accessibility. It is smaller and more resource efficient than its larger counterpart, sacrificing some performance for greater accessibility. Despite this, GPT-4o Mini remains effective for various applications where the full capabilities of GPT-4o are not required.
 
 \begin{table}[h!]
-\centering
+\centering{}
 \caption{Test results for GPT-4o-mini response times over 10 phrases, alongside the average time and standard deviation. The phrases in this table match the phrases in table \ref{tab:phrases_emotions} in order.}
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
@@ -204,7 +204,7 @@ GPT-4o Mini is a compact and efficient version of GPT-4o that balances performan
 \label{tab:phrase_gpt4o-mini}
 \end{table}
 
-In general, GPT-4o-mini tends to respond slightly faster than GPT-4o, with a couple of exceptions (phrase 2 and phrase 9). GPT-4o-mini also shows that it is more consistent with its response times having generally a lower standard deviation on all phrases except phrase 8. 
+In general, GPT-4o-mini tends to respond slightly faster than GPT-4o, with a couple of exceptions (phrase 2 and phrase 9). GPT-4o-mini also shows that it is more consistent with its response times having generally a lower standard deviation on all phrases except phrase 8.
 
 \section{Discussion}
 
