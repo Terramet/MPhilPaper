@@ -14,7 +14,7 @@ The Turtlebot4 is equipped with an iRobot® Create3 mobile base, based on the Ro
 
 \begin{figure}[!htb]
     \centering{}
-    \includegraphics[scale=0.5]{tb4.jpg}
+    \includegraphics[scale=0.5]{m+m_images/tb4.jpg}
     \caption{Turtlebot 4}
     \label{figure:tb4}
 \end{figure}
@@ -36,6 +36,13 @@ The development environment was set up using Python 3.10.12 on the training PC w
 
 To implement emotion detection algorithms, we will utilise various software libraries and frameworks tailored to different aspects of the task. This section outlines the methodologies and tools that will be employed for both facial detection and emotion recognition.
 
+\begin{figure}[!htb]
+    \centering{}
+    \includegraphics[scale=0.35]{m+m_images/ArchitectureDiagram.png}
+    \caption{Architecture diagram showing the integration of facial and sentiment analysis components}
+    \label{figure:haarfeature}
+\end{figure}
+
 \subsection{Facial Detection Algorithms}
 
 \subsubsection{Haar Cascade}
@@ -43,10 +50,22 @@ To implement emotion detection algorithms, we will utilise various software libr
 The emotion recognition system considers the Haar Cascade model as a choice for face detection. This pretrained model is easily accessible and adept at identifying faces in images. The Haar Cascade algorithm, created by Viola and Jones \cite{Viola990517}, is a well-regarded technique for object detection, with a particular emphasis on detecting faces within images.
 
 The Haar Cascade algorithm identifies a collection of rectangular features referred to as Haar-like features. These features are basic designs that exhibit variations in pixel intensities across adjacent sections of the image. To efficiently compute these Haar-like features, the algorithm leverages an integral image representation of the input image. The integral image enables swift computation of the total sum of pixel intensities within any given rectangular area of the image.
-
 The following step entails instructing a series of weak classifiers with the Adaboost learning algorithm. Each of these classifiers is taught to recognise a particular Haar-like feature that is indicative of the intended object, such as a face. Throughout the training process, Adaboost allocates greater importance to incorrectly classified examples, directing subsequent iterations towards rectifying these mistakes.
+\begin{figure}[!htb]
+    \centering{}
+    \includegraphics[scale=0.5]{m+m_images/HaarFeatures.png}
+    \caption{Image showing Haar-like features used in the Haar Cascade algorithm}
+    \label{figure:haarfeature}
+\end{figure}
 
 The Haar Cascade classifier utilises a cascade structure to organise trained weak classifiers. Sequentially arranged, each stage of the cascade consists of multiple weak classifiers. The cascade design enables early stages to swiftly reject negative examples, while positive examples proceed to subsequent stages for further evaluation. During the detection phase, the Haar Cascade algorithm utilises a sliding window approach to scan the input image. At each position of the sliding window, the algorithm applies each stage of the cascade sequentially, rapidly discarding regions of the image that are unlikely to contain the target object based on the results of earlier stages.
+
+\begin{figure}[!htb]
+    \centering{}
+    \includegraphics[scale=0.25]{m+m_images/HaarCascadeDesign.png}
+    \caption{Image showing how the Haar Cascade algorithm rapidly discards regions of the image that are unlikely to contain the target object}
+    \label{figure:haardesign}
+\end{figure}
 
 After going through all the stages of the cascade, the regions of the image that meet the criteria for the target object are identified as positive detections. The algorithm provides the location and size of the detected objects in the image by producing bounding boxes around these regions.
 
@@ -58,9 +77,29 @@ The You Only Look Once (YOLO) model for object detection is a highly efficient a
 
 YOLO's heart lies its single neural network architecture that operates directly on the full image, rather than using traditional sliding window or region proposal methods. This enables YOLO to simultaneously predict bounding boxes and class probabilities for multiple objects in a single forward pass through the network. This approach eliminates the need for multiple passes and significantly reduces computational overhead, making YOLO well-suited for a robotics application where available computational resources are small.
 
+\begin{figure}[!htb]
+    \centering{}
+    \includegraphics[scale=0.35]{m+m_images/figure4_all_boxes_half_yolo.png}
+    \caption{The image after being processed by the YOLO model, showing a significant amount of the bounding boxes predicted by the model, even ones with zero confidence}
+    \label{figure:yoloallboxes}
+\end{figure}
+
 The YOLO algorithm employs a technique where the input image is partitioned into a grid of cells. Within each cell, YOLO predicts the bounding boxes and class probabilities for objects in that cell. In particular, every grid cell is responsible for predicting several bounding boxes, whether or not objects exist within that cell. This approach ensures that YOLO preserves spatial information and can accurately identify objects of diverse sizes and aspect ratios.
 
 The YOLO model applies a regression approach to anticipate bounding boxes, which are denoted by a series of coordinates for the corresponding grid cell. In addition, the model estimates the confidence score for each bounding box, which signifies the probability of an object being present in the box and the predicted box's accuracy. This score considers both the objectness probability (the probability of an object being present within the bounding box) and the precision of the box's coordinates. YOLO then forecasts class probabilities for each bounding box to recognise the occurrence of specific objects within the image. \cite{Redmon2015-eb}
+
+\begin{figure}[!htb]
+    \centering{}
+    \includegraphics[scale=0.35]{m+m_images/figure2_grid_highlighted_yolo.png}
+    \caption{Image showing the grid cells used by the YOLO model to predict confidence scores and bounding boxes, red boxes signifies the grid cells with the highest probability of containing the object}
+    \label{figure:yologrid}
+\end{figure}
+\begin{figure}[!htb]
+    \centering{}
+    \includegraphics[scale=0.35]{m+m_images/figure3_detection_yolo.png}
+    \caption{The image with the final predicted bounding boxes after applying non-maximum suppression}
+    \label{figure:yolodection}
+\end{figure}
 
 YOLO has a smaller variant called Tiny-YOLO. Although they share the same underlying principles and architecture, there are notable differences between the two in terms of model size, speed, and accuracy.
 
@@ -72,11 +111,25 @@ This consists of two components combined to make a method known for its robustne
 
 The Histogram of Oriented Gradients (HOG) is a feature descriptor, it focuses on the structure or shape of an object by capturing the distribution of intensity gradients or edge directions. The first step is gradient computation, typically done using a filter, such as the Sobel operator.
 
+\begin{figure}[!htb]
+    \centering{}
+    \includegraphics[scale=0.35]{m+m_images/figure1_sobel_hog.png}
+    \caption{The resulting image after the Sobel operator}
+    \label{figure:hogsobel}
+\end{figure}
+
 The image is first divided into small spatial regions called cells, such as 8\(\times\)8 pixels. A histogram of gradient directions is created for each cell, with the magnitude of each gradient used to vote into the histogram bins based on the orientation. Typically, 9 bins are used, covering 0 to 180 degrees.
 
 Histograms are usually normalised to address differences in illumination and contrast. This normalisation involves grouping the cells into larger spatial regions called blocks, for example, 2\(\times\)2 cells to a block. The histograms within a block are then concatenated to form the block descriptor. The normalisation factor is then applied and typically includes options such as L2-norm, L2-Hys, L1-norm, or L1-sqrt.
 
 A detection window is then moved across the image at multiple scales. For each window, a HOG descriptor is calculated and used in the linear SVM.
+
+\begin{figure}[!htb]
+    \centering{}
+    \includegraphics[scale=0.35]{m+m_images/figure2_hog_descriptor_visualised_hog.png}
+    \caption{Visualisation of the HOG descriptor}
+    \label{figure:hogdescriptor}
+\end{figure}
 
 The linear Support Vector Machine (SVM) is a type of supervised learning algorithm specifically designed for binary classification tasks. In the context of face detection, the SVM is used to distinguish between face and non-face HOG descriptors. This involves training the SVM on a dataset containing labelled examples of both faces and non-faces, each represented by its corresponding HOG descriptor. During the detection process, the HOG descriptor of each detection window is computed and then entered into the trained SVM classifier. Based on the input, the SVM generates a score that indicates the likelihood of the window being a face or a non-face. Typically, windows with scores that surpass a certain threshold are classified as faces. \cite{1467360}
 
@@ -101,3 +154,5 @@ ResNet50, on the other hand, uses a much deeper network with residual learning t
 VGG16, known for its simplicity and effectiveness, uses small convolutional filters (3\(\times\)3) across 16 layers. It is particularly good at capturing fine-grained visual details, but its large number of parameters makes it resource-intensive, resulting in slower processing times compared to more optimised models like MobileNetV2.
 
 In this work, all models were trained using transfer learning, a technique where a pre-trained CNN is fine-tuned on a new dataset. Transfer learning leverages the knowledge these networks have already gained from training on large-scale image datasets, such as ImageNet, to accelerate learning on smaller, domain-specific datasets. This approach significantly reduces computational resources and training time required, while still achieving high accuracy. By reusing learned features from earlier layers and adapting them to emotion recognition, transfer learning allows these models to generalise well, even when trained on limited data specific to facial emotions.
+
+\subsubsection{Architecture}
