@@ -1,7 +1,22 @@
 \chapter{Materials \& Methods}
 \section{Overview}
 
-This chapter investigates the development of a multi-modal emotion recognition system for a robot that integrates both facial expression and speech analysis to determine human emotions. The system comprises two main components: image-based emotion recognition and speech-based emotion recognition. Three face detection methods (Haar Cascades, Dlib HOG + SVM, and YOLOv4) were compared for the image-based component to identify the most effective technique for isolating faces from images. Subsequently, three convolutional neural network (CNN) architectures (VGG16, ResNet50, and MobileNetV2) were evaluated for their performance in classifying emotions from the segmented facial images. The speech-based component utilises IBM Watson's speech-to-text API to transcribe and analyse user speech for emotion detection. The integration of these components allows the robot to accurately assess emotions through visual and auditory input, providing a robust and comprehensive understanding of human emotional states.
+In this section, we present an overview of the system architecture for the emotion recognition system developed for a resource-limited robotic platform. The architectural diagram (see \ref{figure:architecturediagram}) illustrates how data flows from sensor acquisition through processing to decision-making, enabling the robot to determine human emotional states in real time. The system is composed of two primary modules: the image-based emotion recognition module and the speech-based emotion recognition module, each designed to operate independently while allowing the system to select the most appropriate modality based on contextual demands.
+
+The image-based module begins with the acquisition of visual input via a camera. This input is processed through a face detection component where three methods---Haar Cascades, Dlib HOG+SVM, and YOLOv4---are implemented and compared to determine the most effective approach for isolating faces under varying conditions. Once faces are detected, the resulting regions of interest are forwarded to an emotion classification sub-module. Here, several convolutional neural network (CNN) architectures, including VGG16, ResNet50, and MobileNetV2, are evaluated for their ability to classify the emotional expressions accurately. The CNN models are trained using transfer learning on a dataset of labelled facial images representing seven basic emotions: happiness, sadness, anger, surprise, fear, disgust and contempt. The trained models are then deployed on the robot to process real-time video streams and classify the emotions of human subjects.
+
+Concurrently, the speech-based module captures auditory input through an onboard microphone. This audio stream is first transcribed into text by the \texttt{speech\_recognition} Python library. The transcribed text is then analysed for emotional content using sentiment analysis provided by IBM Watson Cloud Services. By processing these two streams separately, the system can dynamically choose between visual and auditory modalities, ensuring that the most reliable source of emotion data is used based on the situational context.
+
+\begin{figure}[!htb]
+    \centering{}
+    \includegraphics[scale=0.35]{m+m_images/ArchitectureDiagram.png}
+    \caption{Architecture diagram showing the integration of facial and sentiment analysis components}
+    \label{figure:architecturediagram}
+\end{figure}
+
+The development process was iterative, beginning with the independent design and validation of each module using established datasets for face detection and visual emotion classification. Following individual validation, the modules were integrated into a unified framework capable of processing real-time data from the robot's sensors. Rigorous testing was conducted using annotated datasets designed to simulate real-world conditions to assess the system's accuracy, processing speed, and overall resource utilization.
+
+Overall, the architectural design emphasises modularity and flexibility, allowing for individual components to be updated or replaced without impacting the entire system. This design not only streamlines development and testing but also positions the system for future enhancements and adaptations as the requirements of human-robot interaction evolve.
 
 \section{Materials}
 
@@ -35,14 +50,6 @@ The development environment was set up using Python 3.10.12 on the training PC w
 \section{Methods}
 
 To implement emotion detection algorithms, we will utilise various software libraries and frameworks tailored to different aspects of the task. This section outlines the methodologies and tools that will be employed for both facial detection and emotion recognition.
-
-\begin{figure}[!htb]
-    \centering{}
-    \includegraphics[scale=0.35]{m+m_images/ArchitectureDiagram.png}
-    \caption{Architecture diagram showing the integration of facial and sentiment analysis components}
-    \label{figure:haarfeature}
-\end{figure}
-
 \subsection{Facial Detection Algorithms}
 
 \subsubsection{Haar Cascade}
@@ -153,6 +160,13 @@ ResNet50, on the other hand, uses a much deeper network with residual learning t
 
 VGG16, known for its simplicity and effectiveness, uses small convolutional filters (3\(\times\)3) across 16 layers. It is particularly good at capturing fine-grained visual details, but its large number of parameters makes it resource-intensive, resulting in slower processing times compared to more optimised models like MobileNetV2.
 
+\begin{figure}[!htb]
+    \centering{}
+    \includegraphics[scale=0.15]{m+m_images/VGG16.png}
+    \caption{Visualisation of VGG16}
+    \label{figure:vggresnetmobilenet}
+\end{figure}
+
 In this work, all models were trained using transfer learning, a technique where a pre-trained CNN is fine-tuned on a new dataset. Transfer learning leverages the knowledge these networks have already gained from training on large-scale image datasets, such as ImageNet, to accelerate learning on smaller, domain-specific datasets. This approach significantly reduces computational resources and training time required, while still achieving high accuracy. By reusing learned features from earlier layers and adapting them to emotion recognition, transfer learning allows these models to generalise well, even when trained on limited data specific to facial emotions.
 
-\subsubsection{Architecture}
+\section{Datasets}
