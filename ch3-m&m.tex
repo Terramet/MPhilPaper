@@ -1,7 +1,7 @@
 \chapter{Materials \& Methods}
 \section{Overview}
 
-In this section, we present an overview of the system architecture for the emotion recognition system developed for a resource-limited robotic platform. The architectural diagram (see \ref{figure:architecturediagram}) illustrates how data flows from sensor acquisition through processing to decision-making, enabling the robot to determine human emotional states in real time. The system is composed of two primary modules: the image-based emotion recognition module and the speech-based emotion recognition module, each designed to operate independently while allowing the system to select the most appropriate modality based on contextual demands.
+In this section, an overview of the system architecture for the emotion recognition system developed for a resource-limited robotic platform is presented. The architectural diagram (see \ref{figure:architecturediagram}) illustrates how data flows from sensor acquisition through processing to decision-making, enabling the robot to determine human emotional states in real time. The system is composed of two primary modules: the image-based emotion recognition module and the speech-based emotion recognition module, each designed to operate independently while allowing the system to select the most appropriate modality based on contextual demands.
 
 The image-based module begins with the acquisition of visual input via a camera. This input is processed through a face detection component where three methods---Haar Cascades, Dlib HOG+SVM, and YOLOv4---are implemented and compared to determine the most effective approach for isolating faces under varying conditions. Once faces are detected, the resulting regions of interest are forwarded to an emotion classification sub-module. Here, several convolutional neural network (CNN) architectures, including VGG16, ResNet50, and MobileNetV2, are evaluated for their ability to classify the emotional expressions accurately. The CNN models are trained using transfer learning on a dataset of labelled facial images representing seven basic emotions: happiness, sadness, anger, surprise, fear, disgust and contempt. The trained models are then deployed on the robot to process real-time video streams and classify the emotions of human subjects.
 
@@ -169,4 +169,30 @@ VGG16, known for its simplicity and effectiveness, uses small convolutional filt
 
 In this work, all models were trained using transfer learning, a technique where a pre-trained CNN is fine-tuned on a new dataset. Transfer learning leverages the knowledge these networks have already gained from training on large-scale image datasets, such as ImageNet, to accelerate learning on smaller, domain-specific datasets. This approach significantly reduces computational resources and training time required, while still achieving high accuracy. By reusing learned features from earlier layers and adapting them to emotion recognition, transfer learning allows these models to generalise well, even when trained on limited data specific to facial emotions.
 
-\section{Datasets}
+\subsection{Datasets}
+
+\subsubsection{Face Detection Dataset}
+
+The WIDER FACE dataset \cite{yang2016wider} has been meticulously curated to support research in face detection and recognition tasks. It comprises 12,878 images in the training set and 3,224 images in the validation set, sourced from a wide variety of environments. Each image is annotated with one or more bounding boxes that precisely capture the position, orientation and scale of each face, thereby accommodating the extensive variability found in real-world scenarios.
+
+\begin{figure}[!htb]
+    \centering{}
+    \includegraphics[scale=0.35]{m+m_images/single_face_figure_samples.png}
+    \caption{A sample of images from the single-face subset of the WIDER FACE dataset}
+    \label{figure:singlefacesamples}
+\end{figure}
+
+This dataset is distinguished by its rich diversity in subjects, scenes, and environmental conditions. It features images captured in both indoor and outdoor settings, including crowded environments, street scenes, and surveillance footage. The annotations reflect a broad range of lighting conditions, facial poses, and occlusions, making the dataset highly challenging and suitable for evaluating the robustness of face detection algorithms.
+
+\begin{figure}[!htb]
+    \centering{}
+    \includegraphics[scale=0.35]{m+m_images/multi_face_figure_samples.png}
+    \caption{A sample of images from the multi-face subset of the WIDER FACE dataset}
+    \label{figure:multifacesamples}
+\end{figure}
+
+For the experiments, the dataset was further subdivided into two distinct evaluation subsets. The first subset consists of images containing only one face per image (1,342 training and 334 validation images), providing a more controlled scenario with minimal distractions. The second subset comprises images with multiple faces (8,245 training and 2,104 validation images), designed to assess the model's performance under more complex conditions with higher face density. Figures \ref{figure:singlefacesamples} and \ref{figure:multifacesamples} illustrate examples from these subsets, highlighting the diversity within the dataset.
+
+\subsubsection{Emotion Recognition Dataset}
+
+
