@@ -14,7 +14,7 @@ Concurrently, the speech-based module captures auditory input through an onboard
     \label{figure:architecturediagram}
 \end{figure}
 
-The development process was iterative, beginning with the independent design and validation of each module using established datasets for face detection and visual emotion classification. Following individual validation, the modules were integrated into a unified framework capable of processing real-time data from the robot's sensors. Rigorous testing was conducted using annotated datasets designed to simulate real-world conditions to assess the system's accuracy, processing speed, and overall resource utilization.
+The development process was iterative, beginning with the independent design and validation of each module using established datasets for face detection and visual emotion classification. Following individual validation, the modules were integrated into a unified framework capable of processing real-time data from the robot's sensors. Rigorous testing was conducted using annotated datasets designed to simulate real-world conditions to assess the system's accuracy, processing speed, and overall resource utilisation.
 
 Overall, the architectural design emphasises modularity and flexibility, allowing for individual components to be updated or replaced without impacting the entire system. This design not only streamlines development and testing but also positions the system for future enhancements and adaptations as the requirements of human-robot interaction evolve.
 
@@ -144,9 +144,9 @@ The linear Support Vector Machine (SVM) is a type of supervised learning algorit
 
 After successfully detecting faces, an emotion recognition system is created using a Convolutional Neural Network (CNN) implemented in TensorFlow. The CNN model will be taught to categorise facial expressions into specific emotion categories, including happiness, sadness, anger, surprise, fear, and disgust. Using the TensorFlow framework gives a flexible and effective platform for developing, training, and implementing deep learning models.
 
-In summary, the methodology for emotion detection will involve testing multiple facial detection algorithms, including YOLOv4, dlib, and Haar Cascade. This will be followed by the implementation of a CNN model in TensorFlow for emotion recognition. This comprehensive approach aims to develop a robust and accurate system for real-time emotion detection from visual inputs.
+In summary, the methodology for emotion detection involved testing multiple facial detection algorithms, including YOLOv4, dlib, and Haar Cascade. This will be followed by the implementation of a CNN model in TensorFlow for emotion recognition. This comprehensive approach aims to develop a robust and accurate system for real-time emotion detection from visual inputs.
 
-Three models, VGG16, ResNet50 and MobileNetV2, will be tested.
+Three models, VGG16, ResNet50 and MobileNetV2, were tested.
 
 \subsubsection{MobileNetV2, ResNet50, and VGG16}
 
@@ -194,5 +194,77 @@ This dataset is distinguished by its rich diversity in subjects, scenes, and env
 For the experiments, the dataset was further subdivided into two distinct evaluation subsets. The first subset consists of images containing only one face per image (1,342 training and 334 validation images), providing a more controlled scenario with minimal distractions. The second subset comprises images with multiple faces (8,245 training and 2,104 validation images), designed to assess the model's performance under more complex conditions with higher face density. Figures \ref{figure:singlefacesamples} and \ref{figure:multifacesamples} illustrate examples from these subsets, highlighting the diversity within the dataset.
 
 \subsubsection{Emotion Recognition Dataset}
+
+The datasets used for training the emotion recognition models were FERPlus \cite{BarsoumICMI2016} and an adapted version of CK+ \cite{5543262}. Both datasets are publicly available and contain images depicting a range of facial expressions in unconstrained environments. Sample images from these datasets are presented in Figure \ref{figure:sample_imgs}.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[scale=0.5]{fed_images/random_imgs.png}
+    \caption{Sample of images from the combined FERPlus and CK+ dataset}
+    \label{figure:sample_imgs}
+\end{figure}
+
+FERPlus is an improved version of the FER2013 dataset, addressing issues such as mislabeled samples and non-face images that previously led to limited recognition accuracy. The dataset was re-annotated using 10 crowd-sourced labelers, categorising each image into one of ten classes: eight emotion categories (happiness, neutral, sadness, surprise, fear, disgust, contempt, and anger) and two additional categories (unknown' for indeterminate emotions and non-face' for images that do not contain a human face). A maximum voting method was used to assign a single label to each image. The dataset consists of 28,386 training images, 3,546 private test images, and 3,553 public test images, with the distribution of emotions detailed in Table \ref{tab:emotion_distribution}.
+
+\begin{table}[!htb]
+\centering{}
+\caption{Emotion distribution of the training dataset}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+    \textbf{Emotion}   & \textbf{PrivateTest} & \textbf{PublicTest} & \textbf{Training} & \textbf{Total} \\ \hline
+    \textbf{Anger}     & 325                  & 319                 & 2,466             & 3,110          \\ \hline
+    \textbf{Contempt}  & 27                   & 24                  & 165               & 216            \\ \hline
+    \textbf{Disgust}   & 23                   & 34                  & 191               & 248            \\ \hline
+    \textbf{Fear}      & 93                   & 74                  & 652               & 819            \\ \hline
+    \textbf{Happiness} & 928                  & 899                 & 7,528             & 9,355          \\ \hline
+    \textbf{Neutral}   & 1,262                & 1,335               & 10,308            & 12,905         \\ \hline
+    \textbf{Sadness}   & 444                  & 412                 & 3,514             & 4,370          \\ \hline
+    \textbf{Surprise}  & 444                  & 456                 & 3,562             & 4,462          \\ \hline
+    \textbf{Total}     & 3,546                & 3,553               & 28,386            & 35,485         \\ \hline
+\end{tabular}
+\label{tab:emotion_distribution}
+\end{table}
+
+The Extended Cohn-Kanade (CK+) dataset consists of 593 video sequences from 123 subjects aged 18 to 50 years. The dataset includes individuals of diverse gender and ethnicity backgrounds, with 69\% female, 81\% Euro-American, 13\% Afro-American, and 6\% from other groups. Each sequence progresses from a neutral facial expression to a peak expression, recorded at 30 frames per second at a resolution of 640\(\times\)480 pixels. The dataset includes seven labeled emotions: anger, contempt, disgust, fear, happiness, sadness, and surprise.
+
+\begin{table}[!htb]
+    \centering{}
+    \caption{Image counts for each emotion in CK+}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Emotion}   & \textbf{Count} \\ \hline
+        \textbf{Anger}     & 135   \\ \hline
+        \textbf{Contempt}  & 54    \\ \hline
+        \textbf{Disgust}   & 177   \\ \hline
+        \textbf{Fear}      & 75    \\ \hline
+        \textbf{Happiness} & 207   \\ \hline
+        \textbf{Sadness}   & 84    \\ \hline
+        \textbf{Surprise}  & 249   \\ \hline
+    \end{tabular}
+\label{tab:emotion_counts_ck+}
+\end{table}
+
+For consistency with FERPlus, an altered version of CK+ was used, where frames were preprocessed to be grayscale and resized to 48\(\times\)48 pixels. The adapted dataset was retrieved from Kaggle and included the following modifications:
+
+\begin{itemize}
+    \item{} Contains adapted data up to 920 images from 920 original CK+ dataset
+    \item{} Data is already reshaped to 48\(\times\)48 pixels, in grayscale format and facecropped using haarcascade\_frontalface\_default.
+    \item{} Noisy (based on room light/hair format/skin colour) images were adapted to be clearly identified using Haar classifier.
+    \item{} Columns from file are defined as emotion/pixels/Usage
+\end{itemize}
+
+The final dataset contains the emotion distribution summarised in Table \ref{tab:emotion_counts_ck+}.
+
+
+The Expressions in the Wild (ExpW) dataset was used to evaluate the performance of the emotion recognition system. ExpW consists of 106,962 images, almost all (91,793) are annotated facial images collected from the web, covering a diverse range of real-world conditions such as varying lighting, occlusions, and head poses. Each image is labeled with one of seven emotion categories: neutral, happiness, sadness, surprise, fear, disgust, and anger. ExpW contains highly unconstrained facial expressions, making it a valuable benchmark for testing the robustness of the trained model in real-world scenarios.
+
+\begin{figure}[!htb]
+    \centering{}
+    \includegraphics[scale=0.18]{fed_images/exp_w_sample.jpg}
+    \caption{A random selection of images from the ExpW dataset}
+    \label{figure:exp_w_sample}
+\end{figure}
+
+A selection of random images from ExpW can be seen in \ref{figure:exp_w_sample}.
 
 
