@@ -1,4 +1,5 @@
-\chapter{Facial Emotion Detection}
+\chapter{Results}
+\section{Facial Emotion Detection}
 
 This section explores the facial recognition system utilised in the multimodal emotion recognition framework. It encompasses the detailed training methodologies, performance evaluations, and datasets used in the development of facial detection and emotion classification models. The section provides an in-depth analysis of the integration of various detection algorithms, including Haar cascades, dlib, and YOLO (You Only Look Once), alongside the implementation of CNN architectures MobileNetV2, VGG16, and ResNet50 for emotion detection. The comprehensive overview aims to elucidate the effectiveness and efficiency of the system in recognising and interpreting human emotions from facial expressions.
 
@@ -218,7 +219,7 @@ To ensure compatibility and consistency across VGG16, ResNet50, and MobileNetV2 
 
 Firstly, all images are resized from 48\(\times\)48 to 224\(\times\)224 pixels. This resizing is necessary because, while VGG16 and MobileNetV2 can be adjusted to accept 48\(\times\)48 images, ResNet50 could not process the images at 48\(\times\)48 and required a minimum size of 224\(\times\)224. Resizing all images to 224\(\times\)224 ensures uniformity across all models.
 
-Secondly, the images, originally in greyscale, need to be converted to have three channels as required by the models. This is achieved using OpenCV to convert single-channel greyscale images to three-channel images using cv2.cvtColor() with the constant cv2.COLOR\_GRAY2BGR. 
+Secondly, the images, originally in greyscale, need to be converted to have three channels as required by the models. This is achieved using OpenCV to convert single-channel greyscale images to three-channel images using cv2.cvtColor() with the constant cv2.COLOR\_GRAY2BGR.
 
 Lastly, normalisation is specifically required for VGG16. The images are reshaped for normalisation using the StandardScaler from the sklearn.preprocessing Python library and then reshaped back to its original dimensions. This normalisation step ensures that the input data is standardised, which is crucial for the performance of VGG16.
 
