@@ -53,7 +53,6 @@ Changing the Tiny-YOLO config follows the same process as full YOLO; however, th
             -map -gpus 0,1
 \end{lstlisting}
 
-
 \subsubsection{Performance}
 
 To ensure the effectiveness of the YOLO model in detecting faces for subsequent emotion recognition tasks, its performance is evaluated using a variety of metrics. These metrics offer a comprehensive view of the accuracy, speed, and robustness of the model.
@@ -100,14 +99,36 @@ Intersection over Union measures the overlap between the predicted bounding box 
 \text{IoU} = \frac{\text{Area of Overlap}}{\text{Area of Union}}
 \]
 
-AP is a weighted mean of precision scores, where the weight is the increase in recall from the previous threshold. A high AP means that a model has a low false negative and false positive rate.
+Classification models often output a probability score indicating the likelihood that a given input belongs to a particular class. To make a definitive class prediction, this probability is compared against a predetermined threshold. For instance, in a binary classification scenario, if the threshold is set at 0.5, inputs with a probability above 0.5 are classified as positive, while those below are classified as negative. Adjusting this threshold affects the model's sensitivity (true positive rate) and specificity (true negative rate), allowing practitioners to balance between false positives and false negatives based on the application's requirements.
+
+By varying the confidence threshold and observing the resulting performance, a Receiver Operating Characteristic (ROC) curve can be constructed. This curve plots the true positive rate (sensitivity) against the false positive rate (1-specificity) at different threshold levels. Specificity, or the true negative rate, measures the proportion of actual negatives correctly identified by the model and is calculated as:
+
+\[
+\text{Specificity} = \frac{\text{True Negatives (TN)}}{\text{True Negatives (TN)} + \text{False Positives (FP)}}
+\]
+
+The area under the ROC curve (AUC) quantifies the model's performance across all thresholds, with a higher AUC indicating better discrimination ability. An AUC of 0.5 suggests no discrimination (random guessing), while an AUC of 1.0 indicates perfect discrimination.
+
+The precision-recall curve is another evaluation metric, particularly useful in scenarios with imbalanced datasets. It plots precision against recall across different threshold values. This curve helps in understanding the trade-off between precision and recall for different threshold settings, providing insights into how well the model balances between identifying positive instances and avoiding false positives.
+
+In the context of face detection models like YOLO and Tiny YOLO, confidence scores are provided with each prediction, enabling the construction of ROC and precision-recall curves by varying the threshold and observing changes in performance metrics. However, models such as Haar Cascade and dlib's HOG+Linear SVM do not output confidence scores with their detections. This absence makes it challenging to adjust thresholds and generate the corresponding curves. Thus neither a precision-recall curve nor an ROC curve can be generated for these models.
+
+Average Precision (AP) is a metric used to evaluate classification models, especially in imbalanced datasets. It summarises the precision-recall curve into a single value, reflecting the model's ability to balance precision and recall across thresholds. AP is calculated by first sorting the predicted scores in descending order, then computing precision and recall at each threshold. Precision measures the proportion of true positives among positive predictions, while recall shows the proportion of true positives among all actual positives.
+
+The area under the precision-recall curve (AUC) represents the AP, which can be calculated as:
+
+\[
+\text{AP} = \sum_n (R_n - R_{n-1}) P_n
+\]
+
+Where \(P_{n}\) and \(R_{n}\) are the precision and recall at the nth threshold. AP values range from 0 to 1, with higher values indicating better performance. An AP of 1.0 signifies perfect performance, while closer to 0 suggests poor performance. AP provides a comprehensive measure of a model's ability to identify positive instances while minimising false positives.
 
 \begin{table}[h!]
 \centering{}
-\caption{Performance of YOLO on Full Wider Face and Single Face Datasets}
+\caption{Performance of YOLO on on the Wider Face dataset and the single face and multi face subsets}
 \begin{tabular}{|l|c|c|c|}
 \hline
-\textbf{Metric}      & \textbf{Full Wider Face} & \textbf{Multi Face}  & \textbf{Single Face} \\ \hline
+\textbf{Metric}      & \textbf{Wider Face} & \textbf{Multi Face}  & \textbf{Single Face} \\ \hline
 \textbf{Precision}   & 0.61        & 0.61            & 0.95                 \\ \hline
 \textbf{Recall}      & 0.64        & 0.63            & 0.92                 \\ \hline
 \textbf{F1 Score}    & 0.63        & 0.62            & 0.94                 \\ \hline
@@ -119,10 +140,10 @@ AP is a weighted mean of precision scores, where the weight is the increase in r
 
 \begin{table}[h!]
 \centering{}
-\caption{Performance of Tiny YOLO on Full Wider Face and Single Face Datasets}
+\caption{Performance of Tiny YOLO on the Wider Face dataset and the single face and multi face subsets}
 \begin{tabular}{|l|c|c|c|}
 \hline
-\textbf{Metric}      & \textbf{Full Wider Face} & \textbf{Multi Face}  & \textbf{Single Face} \\ \hline
+\textbf{Metric}      & \textbf{Wider Face} & \textbf{Multi Face}  & \textbf{Single Face} \\ \hline
 \textbf{Precision}   & 0.48        & 0.47            & 0.95                 \\ \hline
 \textbf{Recall}      & 0.44        & 0.43            & 0.91                 \\ \hline
 \textbf{F1 Score}    & 0.46        & 0.45            & 0.93                 \\ \hline
@@ -135,16 +156,12 @@ AP is a weighted mean of precision scores, where the weight is the increase in r
 
 Tables \ref{tab:YOLO} and \ref{tab:TINYYOLO} summarise the performance of the YOLO and Tiny YOLO models, respectively, on the 3 datasets.
 
-The results in the tables show an interesting development. Whilst the full YOLO model performs markedly better when there are multiple faces in the image compared to its Tiny counterpart, when it comes to detections where only a single face is present in the image, there is no discernible difference between the two except a slight reduction in the average IoU and average precision. The results on the version of the dataset with only multiple faces backs up the hypothesis that Tiny YOLO struggles with the higher complexity images. Thus, in this system's intended use case (a human-robot 1-on-1), Tiny YOLO is more than sufficient to perform face detection.
-
-In addition to YOLO and Tiny YOLO, the performance of Haar Cascade and dlib's HOG+Linear SVM was evaluated on the same datasets. However since these two models do not provide confidence scores along with their predictions, the metric AP cannot be calculated. AP is derived from the precision-recall curve, where predictions are ranked by their confidence scores. The curve is created by varying a confidence threshold, recalculating precision and recall at different confidence levels. Without confidence scores, every prediction is treated equally, leading to an uninformative or flat curve, which won't reflect the model's ability to prioritise better predictions.
-
 \begin{table}[h!]
 \centering{}
-\caption{Performance of Haar Cascade on Full Wider Face and Single Face Datasets}
+\caption{Performance of Haar Cascade on the Wider Face dataset and the single face and multi face subsets}
 \begin{tabular}{|l|c|c|c|}
 \hline
-\textbf{Metric}      & \textbf{Full Wider Face} & \textbf{Multi Face}  & \textbf{Single Face} \\ \hline
+\textbf{Metric}      & \textbf{Wider Face} & \textbf{Multi Face}  & \textbf{Single Face} \\ \hline
 \textbf{Precision}   & 0.69      &  0.74           & 0.45               \\ \hline
 \textbf{Recall}      & 0.15      &  0.14           & 0.69               \\ \hline
 \textbf{F1 Score}    & 0.25      &  0.24           & 0.55               \\ \hline
@@ -155,10 +172,10 @@ In addition to YOLO and Tiny YOLO, the performance of Haar Cascade and dlib's HO
 
 \begin{table}[h!]
 \centering{}
-\caption{Performance of HOG+Linear SVM on Full Wider Face and Single Face Datasets}
+\caption{Performance of HOG+Linear SVM on the Wider Face dataset and the single face and multi face subsets}
 \begin{tabular}{|l|c|c|c|}
 \hline
-\textbf{Metric}      & \textbf{Full Wider Face} & \textbf{Multi Face}  & \textbf{Single Face} \\ \hline
+\textbf{Metric}      & \textbf{Wider Face} & \textbf{Multi Face}  & \textbf{Single Face} \\ \hline
 \textbf{Precision}   & 0.96       & 0.97           & 0.94               \\ \hline
 \textbf{Recall}      & 0.14       & 0.12           & 0.78               \\ \hline
 \textbf{F1 Score}    & 0.24       & 0.22           & 0.86               \\ \hline
@@ -167,11 +184,7 @@ In addition to YOLO and Tiny YOLO, the performance of Haar Cascade and dlib's HO
 \label{tab:HOGSVM}
 \end{table}
 
-Tables \ref{tab:HAAR} and \ref{tab:HOGSVM} present the performance of the Haar Cascade and HOG + Linear SVM models, respectively, on the full Wider Face dataset and a single face dataset.
-
-These results indicate that both the Haar Cascade and HOG+Linear SVM models, unlike YOLO and Tiny YOLO, perform better on the more complex detection task of the Full Wider face dataset. The high precision but low recall of both models on the full Wider Face dataset and the multiple face subset suggests that they are more conservative in detections, leading to fewer false positives but more false negatives. These initial tests were conducted on the high-powered training machine, clearly highlighting the difference in model complexity by the time taken to complete the tests on the validation sets, the Haar Cascade took a total of 295.36 seconds. In comparison, the HOG+Linear SVM took 1402.19 seconds.
-
-
+Tables \ref{tab:HAAR} and \ref{tab:HOGSVM} present the performance of the Haar Cascade and HOG + Linear SVM models, respectively, on the Wider Face dataset and the single face and multi face subsets.
 
 \subsection{Emotion Detection}
 
@@ -250,7 +263,7 @@ MobileNetV2s second training loss graph is shown in figure \ref{figure:loss_mnv2
     \label{figure:loss_rn50_ofp}
 \end{figure}
 
-ResNet50’s second training results in a similar graph to its first run. After only 5 epochs validation loss begins to fluctuate increasing and decreasing until around epochs 15 to 25, where the validation loss shows a slight upward trend.
+ResNet50's second training results in a similar graph to its first run. After only 5 epochs validation loss begins to fluctuate increasing and decreasing until around epochs 15 to 25, where the validation loss shows a slight upward trend.
 
 \begin{figure}[H]
     \centering{}
