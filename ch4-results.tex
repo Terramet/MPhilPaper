@@ -1,4 +1,13 @@
 \chapter{Results}
+
+\section{Overview}
+
+The developed system integrates Facial Emotion Recognition (FER) and sentiment analysis to interpret user emotions, with both modalities working independently but optimised for their respective domains. The FER system combines face detection and emotion classification, both optimised to enhance accuracy and efficiency. For face detection,  Tiny YOLO, YOLO, HOG+Linear SVM, and Haar Cascade were evaluated based on performance metrics including precision, speed, and robustness. While Tiny YOLO and YOLO were specifically trained to achieve the capability to detect faces, HOG+Linear SVM and Haar Cascade were utilised directly from their respective libraries, Dlib and OpenCV. A comparative analysis of these models identified the most effective solution for real-time emotion recognition tasks.
+
+The emotion classification component used advanced models, including MobileNetV2, ResNet50, and VGG16, leveraging transfer learning techniques. These pre-trained architectures were fine-tuned using labelled emotion datasets to improve their performance for the specific task. During the development process, data augmentation techniques were applied to the dataset to enhance classification accuracy. A comparative analysis of these models highlighted the balance between computational efficiency and classification accuracy.
+
+The sentiment analysis system, using text-based emotion recognition, utilised the cloud-based IBM Watson platform. Rather than being developed from the ground up, this component was selected for its advanced capabilities and tested to ensure seamless integration with the broader system. ChatGPT, a Large Language Model (LLM), was employed to generate speech via a synthesiser, facilitating conversational interactions between the system and users. This user speech was subsequently analysed by IBM Watson to extract sentiment information. Both components were evaluated for their response times, with IBM Watson additionally assessed for its accuracy in identifying sentiments.
+
 \section{Facial Emotion Detection}
 
 This section explores the facial recognition system utilised in the multimodal emotion recognition framework. It encompasses the detailed training methodologies, performance evaluations, and datasets used in the development of facial detection and emotion classification models. The section provides an in-depth analysis of the integration of various detection algorithms, including Haar cascades, dlib, and YOLO (You Only Look Once), alongside the implementation of CNN architectures MobileNetV2, VGG16, and ResNet50 for emotion detection. The comprehensive overview aims to elucidate the effectiveness and efficiency of the system in recognising and interpreting human emotions from facial expressions.
@@ -7,20 +16,31 @@ Considering the constrained computational resources inherent in robotic systems,
 
 \begin{figure}[!htb]
     \centering{}
-    \includegraphics[scale=0.35]{fed_images/pipeline.png}
+    \includegraphics[scale=0.85]{fed_images/pipeline.png}
     \caption{System Pipeline}
     \label{figure:pipeline}
 \end{figure}
 
-\section{Face Detection}
+\subsection{Face Detection}
 
-\subsection{Training}
+\subsubsection{Training}
 
 To effectively utilise YOLO, it is necessary to undergo training from scratch or fine-tuning on a specific dataset to suit the intended purpose. This entails collecting a vast dataset of labelled images where each object of interest is annotated with its bounding-box coordinates and class labels.
 
 The models were trained using the recommended YOLOv4 settings from the Darknet GitHub page, by changing the config file which details the training settings: batch size set to 64, subdivisions set to 16, network size width and height both set to 416, and max\_batches set to 6000. Although max\_batches is typically calculated as the number of classes multiplied by 2000, which would result in 2000 for a single class, the minimum allowable value is 6000. Therefore, this value was adjusted accordingly to meet the training requirements.
+Each [yolo] layer has a \texttt{classes} parameter, which is set to 80 by default in the cloned repository, as the dataset was originally trained on the COCO dataset. This parameter needs to be adjusted to 1 to match the single class in our dataset. Consequently, the filter settings in the [convolutional] layer preceding each [yolo] layer must also be updated. The number of filters is calculated as:
 
-Then the layers are slightly altered to match the number of classes. Each [yolo] layer has a classes section, this results in changing 3 total layers to have 1 instead of the default 80. Finally, just before each [yolo] layer is a [convolutional] layer that needs the filter settings lowering from the default 255 to (classes + 5) * 3, thus these are set to 18. Changing this setting allows the model to predict only one class.
+\[
+\text{filters} = (\text{classes} + 5) \times 3
+\]
+
+Substituting \(\text{classes} = 1\), the filters are set to:
+
+\[
+\text{filters} = (1 + 5) \times 3 = 18
+\]
+
+These changes ensure that the model predicts only one class.
 
 Changing the Tiny-YOLO config follows the same process as full YOLO; however, there are only 2 [yolo] layers instead of 3. Lastly, both models have their own pre-trained weights file that was included to assist with training. The final command used in each is shown below.
 
@@ -34,23 +54,13 @@ Changing the Tiny-YOLO config follows the same process as full YOLO; however, th
 \end{lstlisting}
 
 
-\subsection{Dataset}
-
-Both models are trained on the WIDER FACE \cite{yang2016wider} dataset, a well-known dataset for face recognition and detection tasks. This data set consists of a large number of images annotated with faces at various scales, positions, and levels of occlusion, making it a challenging and diverse data set that is ideal for testing object detection models.
-
-The WIDER FACE dataset has been meticulously crafted to support face detection and recognition algorithms research. It has 12,878 images in the training set and 3,224 images in the validation set sourced from different locations, featuring an extensive assortment of scenes, lighting conditions, poses, and occlusions. This data set is uniquely annotated with precise boundary boxes around each face in every image, providing a reliable basis for training and evaluation purposes.
-
-Each image in this dataset has been annotated with one or more bounding boxes, which capture information about each face's position, orientation, and scale. These annotations effectively encompass the diversity of face sizes and poses in different images, including occluded faces. This data set is exceptional in its capacity to evaluate the robustness of face detection algorithms under challenging conditions.
-
-The WIDER FACE dataset is distinguished by its rich diversity in subjects, scenes, and environmental conditions. It contains images captured in different settings, such as indoor and outdoor scenes, crowded environments, street scenes, and surveillance footage. It features faces of numerous genders, ages, ethnicities, and facial expressions, ensuring a comprehensive representation of real-world scenarios.
-
-An evaluation of YOLO and Tiny YOLO's performance will be done on both the complete dataset and a couple chosen subsets. One subset comprises images containing only one face per image, providing a more focused and simplified training scenario. This approach allows for targeted experimentation and analysis, enabling insights into the model's performance and robustness in scenarios with minimal occlusions or distractions from multiple faces. The resulting size of this dataset is 1,342 images in the training set and 334 images in the validation set. The other subset contains all the images that featured more than one face; this should reveal if the models have any issues with higher complexity images. This set has 8245 in the training set and 2104 images in the validation set.
-
-\subsection{Performance}
+\subsubsection{Performance}
 
 To ensure the effectiveness of the YOLO model in detecting faces for subsequent emotion recognition tasks, its performance is evaluated using a variety of metrics. These metrics offer a comprehensive view of the accuracy, speed, and robustness of the model.
 
-In this section, the performance of the YOLO and Tiny YOLO object detection models was evaluated on a face detection dataset: the Wider Face dataset. This dataset was then split into images containing multiple faces, and images containing only one face. The metrics used for the evaluation include precision, recall, F1 score, average Intersection over Union (IoU), and Average Precision (AP).
+In this section, the performance of the YOLO and Tiny YOLO object detection models was evaluated using the WIDER Face dataset, a widely used benchmark for face detection tasks. This dataset contains a diverse range of face images, including variations in scale, pose, occlusion, and illumination, making it an effective testbed for assessing model robustness. To further analyze performance under different conditions, the dataset was split into images containing multiple faces and those containing only one face.
+
+The evaluation employed several key performance metrics: precision, recall, F1 score, average Intersection over Union (IoU), and Average Precision (AP). Precision measures the accuracy of positive predictions, calculated as the ratio of true positives (correctly detected faces) to the sum of true positives and false positives (incorrect detections). High precision indicates that most of the detected faces are actual faces. The inclusion of the WIDER Face dataset ensured a rigorous assessment of the face detection models, highlighting their strengths and weaknesses in varying real-world scenarios.
 
 Precision measures the accuracy of positive predictions. It is calculated as the ratio of true positives (correctly detected faces) to the sum of true positives and false positives (incorrect detections). High precision means that most of the faces detected by the model are actual faces.
 
@@ -70,13 +80,27 @@ The F1 score is the harmonic mean of precision and recall, providing a single me
 \text{F1} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}
 \]
 
-Intersection over Union measures the overlap between the predicted bounding box and the ground truth bounding box. It is calculated by dividing the overlap area by the union area between the two boxes. A higher IoU means the predicted bounding box closely matches the actual bounding box.
+Intersection over Union measures the overlap between the predicted bounding box and the ground truth bounding box. It is calculated by dividing the overlap area by the union area between the two boxes. A higher IoU means the predicted bounding box closely matches the actual bounding box. An example of the area of overlap can be seen in figure \ref{figure:iou} and the area of union can be seen in \ref{figure:union}.
+
+\begin{figure}[!htb]
+    \centering{}
+    \includegraphics[scale=0.35]{fed_images/iou_overlap.png}
+    \caption{An example of IoU, the red box is the predicted bounding box and the green box is the ground truth bounding box. The blue area is the overlap.}
+    \label{figure:iou}
+\end{figure}
+
+\begin{figure}[!htb]
+    \centering{}
+    \includegraphics[scale=0.35]{fed_images/iou_individual_boxes.png}
+    \caption{The union area of the predicted bounding box and the ground truth bounding box, represented by the total green highlighted area, used in the IoU calculation.}
+    \label{figure:union}
+\end{figure}
 
 \[
 \text{IoU} = \frac{\text{Area of Overlap}}{\text{Area of Union}}
 \]
 
-Average Precision is a weighted mean of precision scores, where the weight is the increase in recall from the previous threshold. A high AP means that a model has a low false negative and false positive rate.
+AP is a weighted mean of precision scores, where the weight is the increase in recall from the previous threshold. A high AP means that a model has a low false negative and false positive rate.
 
 \begin{table}[h!]
 \centering{}
@@ -147,12 +171,9 @@ Tables \ref{tab:HAAR} and \ref{tab:HOGSVM} present the performance of the Haar C
 
 These results indicate that both the Haar Cascade and HOG+Linear SVM models, unlike YOLO and Tiny YOLO, perform better on the more complex detection task of the Full Wider face dataset. The high precision but low recall of both models on the full Wider Face dataset and the multiple face subset suggests that they are more conservative in detections, leading to fewer false positives but more false negatives. These initial tests were conducted on the high-powered training machine, clearly highlighting the difference in model complexity by the time taken to complete the tests on the validation sets, the Haar Cascade took a total of 295.36 seconds. In comparison, the HOG+Linear SVM took 1402.19 seconds.
 
-\section{Emotion Detection}
-\subsection{Datasets}
 
-The dataset is heavily skewed towards the `Happiness' (9,355 images) and `Neutral' (12,905 images) categories. These categories collectively represent over 62\% of the entire dataset. Such a high representation can result in a bias or overfitting \cite{Rangulov2020-pd} towards these emotions, reducing its sensitivity and accuracy in detecting less represented emotions.
 
-However, emotions such as `Contempt' (216 images), `Disgust' (248 images), and `Fear' (819 images) are significantly under-represented. The model might not learn to recognise these emotions effectively due to the limited examples available, leading to poor performance in real-world scenarios where these emotions are present. Emotions like `Anger' (3,110 images), `Sadness' (4,370 images), and `Surprise' (4,462 images) have a moderate number of samples but still far less compared to `Happiness' and `Neutral'. Although better than the least represented categories, the imbalance still poses a risk of the model underperforming in these emotions.
+\subsection{Emotion Detection}
 
 \subsubsection{Preprocessing}
 
@@ -164,7 +185,7 @@ Secondly, the images, originally in greyscale, need to be converted to have thre
 
 Lastly, normalisation is specifically required for VGG16. The images are reshaped for normalisation using the StandardScaler from the sklearn.preprocessing Python library and then reshaped back to its original dimensions. This normalisation step ensures that the input data is standardised, which is crucial for the performance of VGG16.
 
-In addition to these pre-processing steps, data augmentation techniques are applied to enhance the robustness of the models, prevent overfitting, and alleviate the issue of the unbalanced data set. Data augmentation involves artificially increasing the size of the training dataset by generating new training samples from the original data. This can be done through geometric transformations such as width and height shifts, horizontal flips, and zooming as well as many other techniques such as GAN (General Adversarial Networks) and Photometric Transformations \cite{Shorten2019-mj}. These transformations help the models generalise better by exposing them to various image conditions and distortions they might encounter in real-world scenarios.
+In addition to these pre-processing steps, data augmentation techniques are applied to enhance the robustness of the models and prevent overfitting. Data augmentation involves artificially increasing the size of the training dataset by generating new training samples from the original data. This can be done through geometric transformations such as width and height shifts, horizontal flips, and zooming as well as many other techniques such as GAN (General Adversarial Networks) and Photometric Transformations \cite{Shorten2019-mj}. These transformations help the models generalise better by exposing them to various image conditions and distortions they might encounter in real-world scenarios.
 
 Specifically, the following augmentations are applied:
 
@@ -363,7 +384,7 @@ One useful feature of IBM Watson is its conversational abilities, which allow fo
 
 Ultimately, the choice to use cloud-based emotion recognition is a strategic decision that weighs computational efficiency against the aim of developing a flexible and emotionally intelligent robotic system. By tapping into external resources, we not only enhance the robot's performance but also pave the way for integrating state-of-the-art emotion analysis capabilities into the HRI framework, thereby enhancing the user experience and pushing the boundaries of human-robot interaction. \cite{Kumar2022-gd}
 
-Initially, a system was created to incorporate IBM Watson as a chatbot to inform people about ongoing public health issues. The goal was to provide accurate and up-to-date responses to common questions and to give people peace of mind. The system was designed to use IBM’s sentiment analysis to detect fear and point people to resources that could help them. In addition, the chatbot provided the ability to connect an Aldebaran robot, which provided a physical presence that people could interact with. The robot would use its microphones to pick up user speech, which could then be sent to IBM for analysis, after which the robot would respond with what IBM Watson sent back. 
+Initially, a system was created to incorporate IBM Watson as a chatbot to inform people about ongoing public health issues. The goal was to provide accurate and up-to-date responses to common questions and to give people peace of mind. The system was designed to use IBM’s sentiment analysis to detect fear and point people to resources that could help them. In addition, the chatbot provided the ability to connect an Aldebaran robot, which provided a physical presence that people could interact with. The robot would use its microphones to pick up user speech, which could then be sent to IBM for analysis, after which the robot would respond with what IBM Watson sent back.
 
 \begin{figure}[!htb]
     \centering{}
