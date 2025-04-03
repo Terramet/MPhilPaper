@@ -310,7 +310,7 @@ ResNet50 performed very similarly to MobileNetV2 but had a slightly higher recog
 
 VGG16 misclassified most of the `neutral' pictures, only getting 178 correct, mainly classifying them as `surprise' and `anger'. However, VGG16 achieved the highest results of the three models in the fear category. The model also struggles to differentiate between `sadness' and `fear'. Overall, the model does perform well; however, in comparison to ResNet50 and MobileNetV2, it misclassifies too many emotions to be considered reliable.
 
-\subsection{Testing}
+\subsection{Testing Combined Face and Emotion Recognition}
 
 This section evaluates the performance of three emotion recognition models in conjunction with face detection algorithms: Haar cascades, dlib, Tiny YOLO and YOLO. The evaluation is conducted using the Expression in-the-Wild (ExpW) dataset, which contains facial images captured in diverse and unconstrained environments. This comprehensive testing aims to assess the robustness and accuracy of the models and algorithms in recognising emotions under varied and challenging scenarios.
 
@@ -383,7 +383,7 @@ The results of the Turtlebot4 tests are summarised in the table above. It should
 
 The results for the emotion models remained consistent with the original tests conducted on the training PC. Among these models, MobileNetV2 stands out as the fastest and most accurate choice for direct implementation on a robot. However, the selection of a face detection model is more nuanced. For maximum accuracy, Tiny YOLO is the preferred option, closely trailing full YOLO in accuracy, but with each detection taking less than a second as opposed to 6.8 seconds. If rapid detections are a priority, dlib is a clear choice, while Haar Cascade provides a balanced compromise between accuracy and inference speed.
 
-\chapter{Audio Emotion Detection}
+\section{Sentiment Analysis}
 
 This chapter examines the audio emotion recognition component of the multimodal framework, focusing on the use of IBM Watson's capabilities. The analysis includes performance tests to assess the accuracy and speed of IBM Watson in detecting emotions from audio input. Additionally, this chapter discusses the role of large language models (LLMs) in the context of emotion recognition and the limitations that prevent the use of OpenSMILE for this project. Through a detailed evaluation, this chapter aims to provide insight into the effectiveness of IBM Watson as an audio emotion recognition tool and the considerations involved in choosing appropriate technologies for audio analysis.
 
