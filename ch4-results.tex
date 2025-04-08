@@ -57,11 +57,9 @@ Changing the Tiny-YOLO config follows the same process as full YOLO; however, th
 
 To ensure the effectiveness of the YOLO model in detecting faces for subsequent emotion recognition tasks, its performance is evaluated using a variety of metrics. These metrics offer a comprehensive view of the accuracy, speed, and robustness of the model.
 
-In this section, the performance of the YOLO and Tiny YOLO object detection models was evaluated using the WIDER Face dataset, a widely used benchmark for face detection tasks. This dataset contains a diverse range of face images, including variations in scale, pose, occlusion, and illumination, making it an effective testbed for assessing model robustness. To further analyze performance under different conditions, the dataset was split into images containing multiple faces and those containing only one face.
+In this section, the performance of the YOLO and Tiny YOLO object detection models was evaluated using the WIDER Face dataset, a widely used benchmark for face detection tasks. This dataset contains a diverse range of face images, including variations in scale, pose, occlusion, and illumination, making it an effective testbed for assessing model robustness. To further analyse performance under different conditions, the dataset was split into images containing multiple faces and those containing only one face.
 
 The evaluation employed several key performance metrics: precision, recall, F1 score, average Intersection over Union (IoU), and Average Precision (AP). Precision measures the accuracy of positive predictions, calculated as the ratio of true positives (correctly detected faces) to the sum of true positives and false positives (incorrect detections). High precision indicates that most of the detected faces are actual faces. The inclusion of the WIDER Face dataset ensured a rigorous assessment of the face detection models, highlighting their strengths and weaknesses in varying real-world scenarios.
-
-Precision measures the accuracy of positive predictions. It is calculated as the ratio of true positives (correctly detected faces) to the sum of true positives and false positives (incorrect detections). High precision means that most of the faces detected by the model are actual faces.
 
 \[
 \text{Precision} = \frac{\text{True Positives}}{\text{True Positives} + \text{False Positives}}
@@ -84,7 +82,7 @@ Intersection over Union measures the overlap between the predicted bounding box 
 \begin{figure}[!htb]
     \centering{}
     \includegraphics[scale=0.35]{fed_images/iou_overlap.png}
-    \caption{An example of IoU, the red box is the predicted bounding box and the green box is the ground truth bounding box. The blue area is the overlap.}
+    \caption{An example of IoU overlap, the red box is the predicted bounding box and the green box is the ground truth bounding box. The blue area is the overlap.}
     \label{figure:iou}
 \end{figure}
 
@@ -194,33 +192,90 @@ To ensure compatibility and consistency across VGG16, ResNet50, and MobileNetV2 
 
 Firstly, all images are resized from 48\(\times\)48 to 224\(\times\)224 pixels. This resizing is necessary because, while VGG16 and MobileNetV2 can be adjusted to accept 48\(\times\)48 images, ResNet50 could not process the images at 48\(\times\)48 and required a minimum size of 224\(\times\)224. Resizing all images to 224\(\times\)224 ensures uniformity across all models.
 
-Secondly, the images, originally in greyscale, need to be converted to have three channels as required by the models. This is achieved using OpenCV to convert single-channel greyscale images to three-channel images using cv2.cvtColor() with the constant cv2.COLOR\_GRAY2BGR.
+Secondly, the images, originally in greyscale, need to be converted to have three channels as required by the models. This is achieved using OpenCV to convert single-channel greyscale images to three-channel images using \texttt{cv2.cvtColor()} with the constant \texttt{cv2.COLOR\_GRAY2BGR}.
 
 Lastly, normalisation is specifically required for VGG16. The images are reshaped for normalisation using the StandardScaler from the sklearn.preprocessing Python library and then reshaped back to its original dimensions. This normalisation step ensures that the input data is standardised, which is crucial for the performance of VGG16.
 
 In addition to these pre-processing steps, data augmentation techniques are applied to enhance the robustness of the models and prevent overfitting. Data augmentation involves artificially increasing the size of the training dataset by generating new training samples from the original data. This can be done through geometric transformations such as width and height shifts, horizontal flips, and zooming as well as many other techniques such as GAN (General Adversarial Networks) and Photometric Transformations \cite{Shorten2019-mj}. These transformations help the models generalise better by exposing them to various image conditions and distortions they might encounter in real-world scenarios.
 
+\begin{lstlisting}[language=Python, basicstyle=\ttfamily\footnotesize]
+
+    datagen = ImageDataGenerator(  width_shift_range = 0.1,
+                               height_shift_range = 0.1,
+                               horizontal_flip = True,
+                               zoom_range = 0.2)
+    testgen = ImageDataGenerator(  width_shift_range = 0.1,
+                               height_shift_range = 0.1,
+                               horizontal_flip = True,
+                               zoom_range = 0.2)
+
+\end{lstlisting}
+
 Specifically, the following augmentations are applied:
 
 \begin{itemize}
-\item{} Width and Height Shifts: Images are randomly shifted horizontally and vertically by up to 10\% of the image width and height (width\_shift\_range = 0.1 and height\_shift\_range = 0.1).
-\item{} Horizontal Flip: Images are randomly flipped horizontally to simulate different viewing angles (horizontal\_flip = True).
-\item{} Zoom: Random zooms in and out within a range of 0.8 to 1.2 times the original size are applied (zoom\_range = 0.2).
+\item{} Width and Height Shifts: Images are randomly shifted horizontally and vertically by up to 10\% of the image width and height \texttt{(width\_shift\_range = 0.1 and height\_shift\_range = 0.1)}.
+\item{} Horizontal Flip: Images are randomly flipped horizontally to simulate different viewing angles \texttt{(horizontal\_flip = True)}.
+\item{} Zoom: Random zooms in and out within a range of 0.8 to 1.2 times the original size are applied \texttt{(zoom\_range = 0.2)}.
 \end{itemize}
 
 These augmentations are performed using the ImageDataGenerator class from the Keras library, which allows for real-time data augmentation during the training process. By applying these augmentations, the diversity of the training data is significantly increased.
 
 \subsection{Training}
 
-After processing the base convolutional layers of each pretrained model (VGG16, ResNet50, and MobileNetV2), the feature maps were flattened using the flatten() function.
+All of the models were obtained pre-trained on the ImageNet dataset. The base models were loaded without their fully connected layers \texttt{include\_top=False}, allowing it to act as a feature extractor for the emotion recognition task.
 
-The output layer of each model was configured to match the number of emotion classes in the dataset. This layer used a dense layer with the number of neurones equal to the number of classes and a softmax activation function to provide a probability distribution as the resulting prediction.
+\begin{lstlisting}[language=Python, basicstyle=\ttfamily\footnotesize]
 
-The models were then trained using the Adam optimiser with an initial learning rate of 0.001 and a batch size of 64. The models were trained for 50 epochs. The categorical cross-entropy loss function was used to optimise the model.
+    base_model = tf.keras.applications.VGG16(
+        input_shape=(width, height, 3),
+        include_top=False,
+        weights="imagenet"
+    )
+
+\end{lstlisting}
+
+Where \texttt{input\_shape=(width, height, 3)} are the size of the images that the model should accept. In this case, the images were 224\(\times\)224 pixels with 3 channels.
+
+The output of all the models were flattened before being passed through a fully connected \texttt{Dense} output layer with a softmax activation function, which classified the facial expression into one of the predefined emotion categories.
+\begin{lstlisting}[language=Python, basicstyle=\ttfamily\footnotesize]
+
+    model = base_model.output
+    model = Flatten()(model)
+    output_layer = Dense(num_of_classes,
+        activation='softmax')(model)
+    model = Model(inputs=base_model.input, outputs=output_layer)
+
+\end{lstlisting}
+
+The model was compiled using categorical cross-entropy as the loss function, given the multi-class classification nature of the task, and the Adam optimizer with a learning rate of 0.0001. Accuracy was selected as the primary evaluation metric.
+
+\begin{lstlisting}[language=Python, basicstyle=\ttfamily\footnotesize]
+
+    model.compile(loss='categorical_crossentropy', 
+                optimizer=Adam(learning_rate=0.0001), 
+                metrics=['accuracy'])
+
+\end{lstlisting}
+
+The model was trained for 50 epochs with a batch size of 64, using the augmented training dataset. Validation was performed using the augmented test dataset to assess generalisation performance. The number of steps per epoch was determined by the dataset size, ensuring that all samples were processed within each epoch.
+
+\begin{lstlisting}[language=Python, basicstyle=\ttfamily\footnotesize]
+
+    history = model.fit(train_generator,
+                    epochs=50,
+                    batch_size=64,
+                    verbose=1,
+                    validation_data=test_generator,
+                    steps_per_epoch=len(X_train_scaled) // 64,
+                    validation_steps=len(X_test_scaled) // 64)
+
+\end{lstlisting}
+
 
 \begin{figure}[H]
     \centering{}
-    \includegraphics[scale=0.5]{fed_images/train_loss_MobileNetv2.png}
+    \includegraphics[scale=0.5]{fed_images/train_loss_MobileNetv2_captioned.png}
     \caption{The loss graph for the first successful training of MobileNetV2}
     \label{figure:loss_mnv2}
 \end{figure}
@@ -229,7 +284,7 @@ The graph \ref{figure:loss_mnv2} illustrates the training and validation loss fo
 
 \begin{figure}[H]
     \centering{}
-    \includegraphics[scale=0.5]{fed_images/train_loss_ResNet50.png}
+    \includegraphics[scale=0.5]{fed_images/train_loss_ResNet50_captioned.png}
     \caption{The loss graph for the first successful training of ResNet50}
     \label{figure:loss_rn50}
 \end{figure}
@@ -238,7 +293,7 @@ Graph \ref{figure:loss_rn50} shows the training and validation loss for the ResN
 
 \begin{figure}[H]
     \centering{}
-    \includegraphics[scale=0.5]{fed_images/train_loss_VGG16.png}
+    \includegraphics[scale=0.5]{fed_images/train_loss_VGG16_captioned.png}
     \caption{The loss graph for the first successful training of VGG16}
     \label{figure:loss_vgg16}
 \end{figure}
@@ -247,9 +302,36 @@ Finally, graph \ref{figure:loss_vgg16} represents the training and validation lo
 
 To further mitigate the impact of overfitting in the three emotion recognition models a few more techniques were added. Firstly an early stopper was added, this, with a patience set at 10, stops the training of the model if no improvements are made after 10 epochs of training and a checkpointer that will restore the model to the best weights. Alongside this, a reduced learning rate was implemented that lowers the learning rate if the training starts to hit a plateau in accuracy.
 
+\begin{lstlisting}[language=Python, basicstyle=\ttfamily\footnotesize]
+
+checkpointer = ModelCheckpoint(fle_s, monitor='val_loss',
+    verbose=1, save_best_only=True,
+    save_weights_only=False, mode='auto')
+early_stopping = EarlyStopping(monitor='val_loss',
+    patience=10, restore_best_weights=True)
+reduce_lr = ReduceLROnPlateau(monitor='val_loss',
+    factor=0.2, patience=5, min_lr=1e-6)
+
+\end{lstlisting}
+
+With the updated model fit code looking like this:
+
+\begin{lstlisting}[language=Python, basicstyle=\ttfamily\footnotesize]
+
+history = model.fit(train_generator,
+            epochs=50,
+            batch_size=64,
+            verbose=1,
+            callbacks=[checkpointer, early_stopping, reduce_lr],
+            validation_data=test_generator,
+            steps_per_epoch=len(X_train_scaled) // 64,
+            validation_steps=len(X_test_scaled) // 64)
+
+\end{lstlisting}
+
 \begin{figure}[H]
     \centering{}
-    \includegraphics[scale=0.5]{fed_images/train_loss_MobileNetv2_ofp.png}
+    \includegraphics[scale=0.5]{fed_images/train_loss_MobileNetv2_ofp_captioned.png}
     \caption{The loss graph for the second successful training of MobileNetV2}
     \label{figure:loss_mnv2_ofp}
 \end{figure}
@@ -258,7 +340,7 @@ MobileNetV2s second training loss graph is shown in figure \ref{figure:loss_mnv2
 
 \begin{figure}[H]
     \centering{}
-    \includegraphics[scale=0.5]{fed_images/train_loss_ResNet50_ofp.png}
+    \includegraphics[scale=0.5]{fed_images/train_loss_ResNet50_ofp_captioned.png}
     \caption{The loss graph for the second successful training of ResNet50}
     \label{figure:loss_rn50_ofp}
 \end{figure}
@@ -267,7 +349,7 @@ ResNet50's second training results in a similar graph to its first run. After on
 
 \begin{figure}[H]
     \centering{}
-    \includegraphics[scale=0.5]{fed_images/train_loss_VGG16_ofp.png}
+    \includegraphics[scale=0.5]{fed_images/train_loss_VGG16_ofp_captioned.png}
     \caption{The loss graph for the second successful training of VGG16}
     \label{figure:loss_vgg16_ofp}
 \end{figure}
@@ -326,7 +408,7 @@ To determine the optimal combination of face detection and emotion detection alg
                         & Haar Cascade            & 40.7    &   1.19                    \\ \cline{2-4}
                         & dlib                    & 45.6    &   0.696                   \\ \cline{2-4}
                         & YOLO                    & 161.0   &   244                     \\ \hline
-\textbf{Emotion} & MobileNetV2          & 13.6    &   69.8                                            \\ \cline{2-4}
+\textbf{Emotion}        & MobileNetV2             & 13.6    &   69.8                       \\ \cline{2-4}
                         & ResNet50                & 95.3    &   187                      \\ \cline{2-4}
                         & VGG16                   & 312.2   &   80.8                     \\ \hline
 \end{tabular}
@@ -357,8 +439,6 @@ YOLO + VGG16                 & 53.43\%            & 90773                       
 \end{table}
 
 Since only one face in each image is annotated, all faces detectable in the image are compared to the one in the labels file, and the detected face that is closest (using Euclidian distance) to the listed face is considered the valid face for further analysis.
-
-Tiny YOLO and YOLO, as face detection methods, provide the highest number of face detections, leading to improved overall accuracy when combined with emotion recognition models. Specifically, YOLO paired with ResNet50 achieves the highest accuracy in emotion recognition (59.02\%). Haar Cascade and dlib both achieved a lower number of face detections (resulting in lower overall accuracy) and a slower detection speed than Tiny YOLO which achieved a detection time of 0.0250 seconds on average. YOLO does provide a higher accuracy when it comes to the number of face detections and as a result, a higher overall accuracy; however, this increase in accuracy comes at the downside of 0.1610 seconds per face detection, more than 6 times slower than its Tiny counterpart for an overall accuracy increase of only 1.66\%. Thus, Tiny YOLO is the clear choice for facial recognition models. Among the emotion recognition models, ResNet50 generally outperforms MobileNetV2 and VGG16 across all face detection methods; however, considering the difference in detection times for ResNet50 (95.3 milliseconds) and MobileNetV2 (13.6 milliseconds) the choice is not as obvious and both could be left as suitable options depending on the need for higher accuracy or higher detection speed. Another consideration in a resource-constrained environment is the size of the models. ResNet50 has the largest model size at 187MB leaving less memory for the robots other processes to work with. This leaves the best combination for overall accuracy, memory efficiency, and speed to be Tiny YOLO + MobileNetV2 with it only requiring 92.2 MB of memory for both models.
 
 Finally, the performance of the model is evaluated directly on a robot. The system is designed to be standalone and operate without relying on a connected PC, so testing the models in this context is essential.
 
