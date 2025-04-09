@@ -130,8 +130,8 @@ Where \(P_{n}\) and \(R_{n}\) are the precision and recall at the nth threshold.
 \textbf{Precision}   & 0.61        & 0.61            & 0.95                 \\ \hline
 \textbf{Recall}      & 0.64        & 0.63            & 0.92                 \\ \hline
 \textbf{F1 Score}    & 0.63        & 0.62            & 0.94                 \\ \hline
-\textbf{Average IoU} & 45.77\%     & 45.12\%            & 80.90\%              \\ \hline
-\textbf{AP}          & 63.17\%     & 62.11\%              & 97.39\%              \\ \hline
+\textbf{Average IoU} & 45.77\%     & 45.12\%         & 80.90\%              \\ \hline
+\textbf{AP}          & 63.17\%     & 62.11\%         & 97.39\%              \\ \hline
 \end{tabular}
 \label{tab:YOLO}
 \end{table}
@@ -145,8 +145,8 @@ Where \(P_{n}\) and \(R_{n}\) are the precision and recall at the nth threshold.
 \textbf{Precision}   & 0.48        & 0.47            & 0.95                 \\ \hline
 \textbf{Recall}      & 0.44        & 0.43            & 0.91                 \\ \hline
 \textbf{F1 Score}    & 0.46        & 0.45            & 0.93                 \\ \hline
-\textbf{Average IoU} & 35.32\%     & 34.46\%            & 78.08\%              \\ \hline
-\textbf{AP}          & 36.63\%     & 35.04\%             & 92.33\%              \\ \hline
+\textbf{Average IoU} & 35.32\%     & 34.46\%         & 78.08\%              \\ \hline
+\textbf{AP}          & 36.63\%     & 35.04\%         & 92.33\%              \\ \hline
 \end{tabular}
 
 \label{tab:TINYYOLO}
@@ -163,7 +163,7 @@ Tables \ref{tab:YOLO} and \ref{tab:TINYYOLO} summarise the performance of the YO
 \textbf{Precision}   & 0.69      &  0.74           & 0.45               \\ \hline
 \textbf{Recall}      & 0.15      &  0.14           & 0.69               \\ \hline
 \textbf{F1 Score}    & 0.25      &  0.24           & 0.55               \\ \hline
-\textbf{Average IoU} & 69.64\%     &  69.63\%           & 69.36\%              \\ \hline
+\textbf{Average IoU} & 69.64\%   &  69.63\%        & 69.36\%            \\ \hline
 \end{tabular}
 \label{tab:HAAR}
 \end{table}
@@ -177,7 +177,7 @@ Tables \ref{tab:YOLO} and \ref{tab:TINYYOLO} summarise the performance of the YO
 \textbf{Precision}   & 0.96       & 0.97           & 0.94               \\ \hline
 \textbf{Recall}      & 0.14       & 0.12           & 0.78               \\ \hline
 \textbf{F1 Score}    & 0.24       & 0.22           & 0.86               \\ \hline
-\textbf{Average IoU} & 69.61\%      & 69.91\%           & 66.35\%              \\ \hline
+\textbf{Average IoU} & 69.61\%    & 69.91\%      & 66.35\%              \\ \hline
 \end{tabular}
 \label{tab:HOGSVM}
 \end{table}
@@ -252,13 +252,15 @@ The model was compiled using categorical cross-entropy as the loss function, giv
 
 \begin{lstlisting}[language=Python, basicstyle=\ttfamily\footnotesize]
 
-    model.compile(loss='categorical_crossentropy', 
-                optimizer=Adam(learning_rate=0.0001), 
+    model.compile(loss='categorical_crossentropy',
+                optimizer=Adam(learning_rate=0.0001),
                 metrics=['accuracy'])
 
 \end{lstlisting}
 
 The model was trained for 50 epochs with a batch size of 64, using the augmented training dataset. Validation was performed using the augmented test dataset to assess generalisation performance. The number of steps per epoch was determined by the dataset size, ensuring that all samples were processed within each epoch.
+
+Then the following code is used to train the model:
 
 \begin{lstlisting}[language=Python, basicstyle=\ttfamily\footnotesize]
 
@@ -358,25 +360,16 @@ In the second training run of VGG16 after about 5 epochs, the validation loss be
 
 \begin{figure}[H]
     \centering{}
-    \includegraphics[scale=0.38]{fed_images/conf_matrix_MobileNetv2.png}
+    \includegraphics[scale=0.58]{fed_images/conf_matrix_MobileNetv2_percentage.png}
     \caption{The confusion matrix detailing the performance of MobileNetV2 on the PrivateTest set}
     \label{figure:conf_mnv2}
 \end{figure}
 
 The confusion matrix \ref{figure:conf_mnv2} illustrates the performance of MobileNetV2 across the 8 emotions. The model accurately classifies the `happiness' and `neutral' expressions, with 853 and 1034 correct predictions, respectively. However, it struggles with `fear' and `contempt' frequently misclassifying them as other emotions. There is notable confusion between `sadness' and `neutral' with it incorrectly classifying them as each other.
 
-Figure \ref{figure:sadneutral} shows an example of images from sadness and neutral. The confusion could be attributed to the subtle facial differences between `sadness' and `neutral' expressions. Both emotions tend to exhibit minimal facial muscle movement, and the lack of exaggerated features such as smiles or frowns can make it challenging for models to distinguish between them.
-
 \begin{figure}[H]
     \centering{}
-    \includegraphics[scale=0.38]{fed_images/sadness+neutral.png}
-    \caption{Example images showing the very slight variation between sadness and neutral}
-    \label{figure:sadneutral}
-\end{figure}
-
-\begin{figure}[H]
-    \centering{}
-    \includegraphics[scale=0.38]{fed_images/conf_matrix_ResNet50.png}
+    \includegraphics[scale=0.58]{fed_images/conf_matrix_ResNet50_percentage.png}
     \caption{The confusion matrix detailing the performance of ResNet50 on the PrivateTest set}
     \label{figure:conf_rn50}
 \end{figure}
@@ -385,7 +378,7 @@ ResNet50 performed very similarly to MobileNetV2 but had a slightly higher recog
 
 \begin{figure}[H]
     \centering{}
-    \includegraphics[scale=0.38]{fed_images/conf_matrix_VGG16.png}
+    \includegraphics[scale=0.58]{fed_images/conf_matrix_VGG16_percentage.png}
     \caption{The confusion matrix detailing the performance of VGG16 on the PrivateTest set}
     \label{figure:conf_vgg16}
 \end{figure}
@@ -404,13 +397,13 @@ To determine the optimal combination of face detection and emotion detection alg
 \begin{tabular}{|l|l|c|c|}
 \hline
 \textbf{Algorithm} & \textbf{Algorithm Name} & \textbf{Avg. Inf Time (ms)} & \textbf{Model Size (MB)}\\ \hline
-\textbf{Face} & Tiny YOLO               & 25.0    &   22.4                                            \\ \cline{2-4}
+\textbf{Face}           & Tiny YOLO               & 25.0    &   22.4                    \\ \cline{2-4}
                         & Haar Cascade            & 40.7    &   1.19                    \\ \cline{2-4}
                         & dlib                    & 45.6    &   0.696                   \\ \cline{2-4}
                         & YOLO                    & 161.0   &   244                     \\ \hline
-\textbf{Emotion}        & MobileNetV2             & 13.6    &   69.8                       \\ \cline{2-4}
-                        & ResNet50                & 95.3    &   187                      \\ \cline{2-4}
-                        & VGG16                   & 312.2   &   80.8                     \\ \hline
+\textbf{Emotion}        & MobileNetV2             & 13.6    &   69.8                    \\ \cline{2-4}
+                        & ResNet50                & 95.3    &   187                     \\ \cline{2-4}
+                        & VGG16                   & 312.2   &   80.8                    \\ \hline
 \end{tabular}
 \label{tab:algorithm_detection_times_ms}
 \end{table}
@@ -421,8 +414,8 @@ To determine the optimal combination of face detection and emotion detection alg
 \caption{Accuracy and Number of Face Detection for Model Combinations, out of a possible 91,793 faces}
 \begin{tabular}{|l|c|c|}
 \hline
-\textbf{Model Combination}   & \textbf{Accuracy} & \textbf{No.\ of Face Detections} \\ \hline
-dlib + MobileNetV2           & 37.06\%           & 56098                                   \\ \hline
+\textbf{Model Combination}   & \textbf{Accuracy} & \textbf{No.\ of Face Detections}         \\ \hline
+dlib + MobileNetV2           & 37.06\%            & 56098                                   \\ \hline
 dlib + ResNet50              & 37.77\%            & 56098                                   \\ \hline
 dlib + VGG16                 & 34.52\%            & 56098                                   \\ \hline
 Haar + MobileNetV2           & 46.63\%            & 76416                                   \\ \hline
@@ -459,13 +452,11 @@ Finally, the performance of the model is evaluated directly on a robot. The syst
 \label{tab:algorithm_detection_times_ms_robot}
 \end{table}
 
-The results of the Turtlebot4 tests are summarised in the table above. It should be noted that the performance of face detection methods exhibits a significant reversal when implemented on a robot with limited resources. Surprisingly, Tiny YOLO, which was initially the fastest, was surpassed by both dlib and Haar Cascade. Even Haar Cascade, was outperformed by dlib by a considerable margin. This behaviour could be due to a couple things, the Turtlebot 4 does not possess any GPUs unlike the training PC and it is possible that YOLO is using GPU acceleration to improve detection times. The other possibility is that YOLO leverages the vastly increased number of CPU cores on the training PC to perform parallel computations more efficiently, distributing the workload across multiple cores. However, when deployed on the Turtlebot4, which has significantly fewer cores, YOLO's speed advantage diminishes, leading to slower inference times compared to simpler models like dlib and Haar Cascade.
-
-The results for the emotion models remained consistent with the original tests conducted on the training PC. Among these models, MobileNetV2 stands out as the fastest and most accurate choice for direct implementation on a robot. However, the selection of a face detection model is more nuanced. For maximum accuracy, Tiny YOLO is the preferred option, closely trailing full YOLO in accuracy, but with each detection taking less than a second as opposed to 6.8 seconds. If rapid detections are a priority, dlib is a clear choice, while Haar Cascade provides a balanced compromise between accuracy and inference speed.
+The results of the Turtlebot4 tests are summarised in the table \ref{tab:algorithm_detection_times_ms_robot}.
 
 \section{Sentiment Analysis}
 
-This chapter examines the audio emotion recognition component of the multimodal framework, focusing on the use of IBM Watson's capabilities. The analysis includes performance tests to assess the accuracy and speed of IBM Watson in detecting emotions from audio input. Additionally, this chapter discusses the role of large language models (LLMs) in the context of emotion recognition and the limitations that prevent the use of OpenSMILE for this project. Through a detailed evaluation, this chapter aims to provide insight into the effectiveness of IBM Watson as an audio emotion recognition tool and the considerations involved in choosing appropriate technologies for audio analysis.
+This chapter examines the sentiment analysis component of the multimodal framework, focusing on the use of IBM Watson's capabilities. The analysis includes performance tests to assess the accuracy and speed of IBM Watson in detecting emotions from audio input. Additionally, this chapter discusses the role of large language models (LLMs) in the context of emotion recognition and the limitations that prevent the use of OpenSMILE for this project. Through a detailed evaluation, this chapter aims to provide insight into the effectiveness of IBM Watson as an audio emotion recognition tool and the considerations involved in choosing appropriate technologies for audio analysis.
 
 \section{IBM Watson}
 
