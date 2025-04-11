@@ -458,7 +458,7 @@ The results of the Turtlebot4 tests are summarised in the table \ref{tab:algorit
 
 This chapter examines the sentiment analysis component of the multimodal framework, focusing on the use of IBM Watson's capabilities. The analysis includes performance tests to assess the accuracy and speed of IBM Watson in detecting emotions from audio input. Additionally, this chapter discusses the role of large language models (LLMs) in the context of emotion recognition and the limitations that prevent the use of OpenSMILE for this project. Through a detailed evaluation, this chapter aims to provide insight into the effectiveness of IBM Watson as an audio emotion recognition tool and the considerations involved in choosing appropriate technologies for audio analysis.
 
-\section{IBM Watson}
+\subsection{IBM Watson}
 
 Given the current computational demands of core functionalities and concurrent facial emotion recognition processes, it would be beneficial to consider offloading speech emotion recognition to an external entity. Using cloud-based solutions, such as IBM Watson's API, presents an appealing option. By interfacing with Watson, recorded human speech can be remotely processed, allowing emotional predictions based on textual analysis. This approach not only reduces the computational burden on the robot, but also harnesses the advanced emotion analysis capabilities offered by cloud services.
 
@@ -468,7 +468,7 @@ One useful feature of IBM Watson is its conversational abilities, which allow fo
 
 Ultimately, the choice to use cloud-based emotion recognition is a strategic decision that weighs computational efficiency against the aim of developing a flexible and emotionally intelligent robotic system. By tapping into external resources, we not only enhance the robot's performance but also pave the way for integrating state-of-the-art emotion analysis capabilities into the HRI framework, thereby enhancing the user experience and pushing the boundaries of human-robot interaction. \cite{Kumar2022-gd}
 
-Initially, a system was created to incorporate IBM Watson as a chatbot to inform people about ongoing public health issues. The goal was to provide accurate and up-to-date responses to common questions and to give people peace of mind. The system was designed to use IBM’s sentiment analysis to detect fear and point people to resources that could help them. In addition, the chatbot provided the ability to connect an Aldebaran robot, which provided a physical presence that people could interact with. The robot would use its microphones to pick up user speech, which could then be sent to IBM for analysis, after which the robot would respond with what IBM Watson sent back.
+Initially, a system was created to incorporate IBM Watson as a chatbot to inform people about ongoing public health issues. The goal was to provide accurate and up-to-date responses to common questions and to give people peace of mind. The system was designed to use IBM's sentiment analysis to detect fear and point people to resources that could help them. In addition, the chatbot provided the ability to connect an Aldebaran robot, which provided a physical presence that people could interact with. The robot would use its microphones to pick up user speech, which could then be sent to IBM for analysis, after which the robot would respond with what IBM Watson sent back.
 
 \begin{figure}[!htb]
     \centering{}
@@ -479,7 +479,7 @@ Initially, a system was created to incorporate IBM Watson as a chatbot to inform
 
 This system also leveraged IBM Watson's text-to-speech capabilities, allowing users to fully customise the generated voice based on a variety of parameters. In addition to selecting the gender of the voice, users could choose accents from different regions, making the interaction more personalised and culturally relevant. This also allows adjustments to pitch, enabling a higher or lower tone depending on user preference or specific application needs.
 
-\section{LLM}
+\subsection{LLM}
 
 It is important to note that while IBM Watson's Conversation service provides a structured approach to dialogue management, it may lack the spontaneity and flexibility of natural human conversation. Relying on conversation trees imposes constraints on the flow of interaction, limiting the opportunity for open-ended dialogue and real-time adaptation to user input. As a result, interactions with the robot may feel scripted or constrained, potentially detracting from the overall user experience in certain situations.
 
@@ -487,7 +487,7 @@ To achieve a natural and engaging human-robot interaction, it is imperative to d
 
 By incorporating ChatGPT into this system, we can create a more interactive and emotionally responsive dialogue experience. In this setup, the speech-emotion recognition system handles the analysis of user speech to detect emotions such as happiness, sadness, anger, or neutrality. These detected emotional states can then be communicated to ChatGPT alongside the text of the user's speech. This allows ChatGPT to factor in both the content of the conversation and the emotional context provided by the speech-emotion recognition system, helping it generate more empathetic and contextually appropriate responses.
 
-For example, if the speech-emotion recognition system detects frustration in the user's voice, this emotional information can be fed to ChatGPT, allowing it to adapt its responses in real time to address the user’s emotional state more sensitively. This synergy allows for a deeper and more emotionally aware interaction, where ChatGPT can tailor the flow of the conversation based on both the user’s words and their emotional tone.
+For example, if the speech-emotion recognition system detects frustration in the user's voice, this emotional information can be fed to ChatGPT, allowing it to adapt its responses in real time to address the user's emotional state more sensitively. This synergy allows for a deeper and more emotionally aware interaction, where ChatGPT can tailor the flow of the conversation based on both the user's words and their emotional tone.
 
 Additionally, ChatGPT can use the emotional feedback from the speech-emotion system to adjust the direction of the conversation, perhaps steering toward topics that might alleviate negative emotions or enhance positive ones. This makes it possible to create a more engaging and emotionally intelligent interaction, where the robot can respond in a way that feels more human and responsive to the user's mood. Using ChatGPT for dialogue and the emotion recognition system for emotional analysis, we enable a hybrid approach where each component focuses on its strengths, resulting in a more robust and user-centric interaction.
 
@@ -497,7 +497,7 @@ One of the core strengths of this system lies in how it expands ChatGPT's capabi
 
 The system could also leverage locally run language models, such as GPT4All, to enhance its natural language understanding and response capabilities. Running these models locally ensures full control over data privacy and security. This approach allows for greater flexibility, as the models can be fine-tuned to better suit the system's specific needs without reliance on external cloud services. In addition, the system can operate independently of an internet connection, making it more reliable in environments with limited or unstable connectivity. This setup offers both customisation options and scalability, ensuring robust performance for complex, language-driven tasks.
 
-\section{OpenSMILE}
+\subsection{OpenSMILE}
 
 OpenSMILE \cite{opensmile-2010}, which stands for ``Open-Source Speech and Music Interpretation by Large-Space Extraction'' is a powerful open-source toolkit widely used in audio signal processing. Its primary function is to extract an extensive range of acoustic features from audio signals, providing a versatile platform for various applications that include speech recognition, emotion recognition, speaker identification, and music analysis. One of the key strengths of OpenSMILE lies in its modular architecture, which allows the customisation of the feature extraction process to suit specific requirements. This modularity is achieved through a collection of feature extraction components known as ``functionals'' each responsible for computing a particular set of features. It is possible to choose from a rich library of functionals and combine them as needed to create tailored feature sets.
 
@@ -505,7 +505,7 @@ Moreover, OpenSMILE is designed for real-time processing of audio streams, makin
 
 OpenSMILE facilitates the integration of extracted features with machine learning algorithms, serving as a crucial preprocessing step for tasks such as classification. The features computed by OpenSMILE capture essential characteristics of audio signals, enabling accurate modelling and interpretation of audio data. However, given the limited resources available on a robotic platform, it could run into performance issues that severely limit its capabilities. The memory requirements of OpenSMILE can also be significant, particularly when extracting a large number of features from lengthy audio streams, with each feature set taking up to 100MB for a short 18-second audio clip. Robotics platforms typically have limited memory capacity, and allocating resources to OpenSMILE may strain the system, potentially impacting overall system stability and reliability. This limitation is purely hardware based and future robots that can afford more powerful systems would be able to utilise OpenSMILE feature extraction plus a classification model to determine emotions.
 
-\section{IBM Waston Performance}
+\subsection{IBM Waston Performance}
 
 In this section, the performance of IBM Watson's Natural Language Understanding (NLU) service is evaluated in analysing the emotional content of various phrases. To ensure a robust assessment, each phrase was tested five times, and response times were recorded. The table \ref{tab:phrase_tests} presents the response times (in seconds) for each test run with ten different phrases shown in \ref{tab:phrases_emotions}.
 
@@ -538,7 +538,7 @@ The food at that restaurant was absolutely disgusting. The meat was undercooked,
 \textbf{Test number} & \textbf{Run 1} & \textbf{Run 2} & \textbf{Run 3} & \textbf{Run 4} & \textbf{Run 5} & \textbf{Average} & \textbf{SD} \\ \hline
 \textbf{Phrase 1}    & 1.81 & 2.07 & 1.36 & 1.58 & 1.45 & 1.654 & 0.257        \\ \hline
 \textbf{Phrase 2}    & 0.69 & 0.51 & 0.38 & 0.40 & 0.36 & 0.468 & 0.123        \\ \hline
-\textbf{Phrase 3}    & 0.43 & 0.47 & 0.39 & 0.36 & 0.40 & 0.41 &  0.037       \\ \hline
+\textbf{Phrase 3}    & 0.43 & 0.47 & 0.39 & 0.36 & 0.40 & 0.41  & 0.037        \\ \hline
 \textbf{Phrase 4}    & 0.69 & 0.63 & 0.38 & 0.39 & 0.43 & 0.504 & 0.130        \\ \hline
 \textbf{Phrase 5}    & 0.38 & 0.38 & 0.40 & 1.23 & 0.48 & 0.574 & 0.330        \\ \hline
 \textbf{Phrase 6}    & 0.47 & 0.40 & 0.60 & 0.52 & 0.43 & 0.484 & 0.071        \\ \hline
@@ -574,13 +574,17 @@ IBM Watson NLU demonstrates efficient and consistent performance in emotion anal
 
 Each row in table \ref{tab:test_results} shows the predicted probabilities for sadness, joy, fear, disgust, and anger for each phrase in table \ref{tab:phrases_emotions}. Overall, IBM Watson's predictions match well with the expected emotions. However, the only phrase that did not meet the expected emotion is the one about changes in workplace policies (phrase 8), which was predicted mainly as sadness when the expected emotion was anger, anger was the next highest prediction.
 
-\section{ChatGPT Performance}
+\subsection{ChatGPT Performance}
 
 In this section, we evaluate the performance of several models, including GPT-3.5-turbo, GPT-4o, and GPT-4o-mini \cite{openai2024}, by measuring their response times to a set of predefined phrases. Each model was tested multiple times to ensure a thorough assessment of efficiency. The recorded response times (in seconds) for each test run are presented in three separate tables. This analysis aims to provide insights into the responsiveness of each model and compare their performance under consistent testing conditions.
 
 This section also provides an overview of the key differences among three language models: GPT-3.5-turbo, GPT-4o, and GPT-4o Mini. Each model is built on advanced architectures, but they vary significantly in performance and intended use cases.
 
-\subsection{GPT-3.5-turbo}
+In this system ChatGPT is only providing a way of interacting with the user to prompt speech and conversation and is not being used to analyse the speech for emotion. The role of ChatGPT in this system is strictly limited to facilitating natural and engaging dialogue with the user. It does not perform any emotion recognition or analysis on the user's speech. Instead, the emotion recognition task is handled entirely by the IBM Watson system, which processes the text input to detect emotional states.
+
+This distinction is crucial because the tests conducted for ChatGPT focus solely on response times, rather than its ability to interpret or analyse emotional content. By separating these functionalities, the system leverages the strengths of each component: ChatGPT for conversational interaction and IBM Watson for emotion analysis.
+
+\subsubsection{GPT-3.5-turbo}
 
 ChatGPT 3.5-turbo is based on the GPT-3.5 engine, which was trained on over 175 billion parameters. While it represents a significant advancement in natural language processing, it has notable downsides. One major issue is its accuracy and reliability; ChatGPT 3.5 is more prone to `hallucinations', which means it can generate incorrect or non-sensical information, especially when faced with ambiguous queries. These limitations can lead to inappropriate outputs, which may affect user trust and satisfaction. Despite these challenges, ChatGPT 3.5-turbo remains effective for many applications, such as basic content generation and straightforward chatbot interactions.
 
@@ -608,7 +612,7 @@ From the results, it is noticeable that shorter, simpler phrases (like Phrase 1 
 
 Interestingly, certain phrases such as Phrase 3 and Phrase 7 also show a marked increase in response time and standard deviation, indicating that as the task becomes more complex, the model requires more time and produces more varied results. Overall, the data demonstrates that GPT-3.5-turbo's response times correlate with phrase complexity, with the model generally being faster on simpler phrases and taking longer on more intricate ones.
 
-\subsection{GPT-4o}
+\subsubsection{GPT-4o}
 
 GPT-4o is the full-fledged version of the GPT-4 architecture, representing a significant upgrade over GPT-3.5-turbo. This model features enhanced accuracy and reliability, being trained on more than a trillion parameters, which allows it to generate more precise responses and significantly reduce the likelihood of hallucinations. GPT-4o excels at understanding nuanced contexts and producing coherent, contextually appropriate text. In addition, it is designed for complex tasks that require high computational power, making it suitable for applications in industries such as finance, healthcare, and research, where precision and depth are crucial.
 
@@ -636,7 +640,7 @@ For simpler phrases, such as Phrase 1 and Phrase 2, GPT-4o performs relatively q
 
 Phrase 5 sees a large jump in SD because one run takes 5.37 seconds to get a response. It is not clear as to why this happened, this could have been due to a momentary drop in internet quality or an issue with OpenAI's servers. Without this outlier, the average response time was 0.908 seconds and the standard deviation is only 0.103, which is the expected result.
 
-\subsection{GPT-4o Mini}
+\subsubsection{GPT-4o Mini}
 
 GPT-4o Mini is a compact and efficient version of GPT-4o that balances performance with accessibility. It is smaller and more resource efficient than its larger counterpart, sacrificing some performance for greater accessibility. Despite this, GPT-4o Mini remains effective for various applications where the full capabilities of GPT-4o are not required.
 
@@ -662,7 +666,7 @@ GPT-4o Mini is a compact and efficient version of GPT-4o that balances performan
 
 In general, GPT-4o-mini tends to respond slightly faster than GPT-4o, with a couple of exceptions (phrase 2 and phrase 9). GPT-4o-mini also shows that it is more consistent with its response times having generally a lower standard deviation on all phrases except phrase 8.
 
-\section{Discussion}
+\subsection{Discussion}
 
 The audio emotion recognition system has largely met performance expectations, showing robust capabilities in real-time emotion detection. IBM Watson's consistent response times, typically under one second, alongside its reliable accuracy in detecting a range of emotional tones, make it a valuable tool, especially in contexts where facial emotion recognition may not be possible or practical. Its ability to quickly process audio input and return relevant emotional insights ensures that it can seamlessly complement or even substitute facial emotion recognition when required.
 
