@@ -456,7 +456,14 @@ The results of the Turtlebot4 tests are summarised in the table \ref{tab:algorit
 
 \section{Sentiment Analysis}
 
-This chapter examines the sentiment analysis component of the multimodal framework, focusing on the use of IBM Watson's capabilities. The analysis includes performance tests to assess the accuracy and speed of IBM Watson in detecting emotions from audio input. Additionally, this chapter discusses the role of large language models (LLMs) in the context of emotion recognition and the limitations that prevent the use of OpenSMILE for this project. Through a detailed evaluation, this chapter aims to provide insight into the effectiveness of IBM Watson as an audio emotion recognition tool and the considerations involved in choosing appropriate technologies for audio analysis.
+This chapter examines the sentiment analysis component of the multimodal framework, focusing on the use of IBM Watson's capabilities. The analysis includes performance tests to assess the accuracy and speed of IBM Watson in detecting emotions from text input. Additionally, this chapter discusses the role of large language models (LLMs) in the context of emotion recognition and the limitations that prevent the use of OpenSMILE for this project. Through a detailed evaluation, this chapter aims to provide insight into the effectiveness of IBM Watson as an text emotion analysis tool and the considerations involved in choosing appropriate technologies for text/audio analysis.
+
+\begin{figure}[H]
+    \centering{}
+    \includegraphics[scale=0.28]{aed_images/sentiment_arch_actual.png}
+    \caption{The architecture of the sentiment analysis system}
+    \label{figure:sentiment_arch}
+\end{figure}
 
 \subsection{IBM Watson}
 
@@ -505,9 +512,11 @@ Moreover, OpenSMILE is designed for real-time processing of audio streams, makin
 
 OpenSMILE facilitates the integration of extracted features with machine learning algorithms, serving as a crucial preprocessing step for tasks such as classification. The features computed by OpenSMILE capture essential characteristics of audio signals, enabling accurate modelling and interpretation of audio data. However, given the limited resources available on a robotic platform, it could run into performance issues that severely limit its capabilities. The memory requirements of OpenSMILE can also be significant, particularly when extracting a large number of features from lengthy audio streams, with each feature set taking up to 100MB for a short 18-second audio clip. Robotics platforms typically have limited memory capacity, and allocating resources to OpenSMILE may strain the system, potentially impacting overall system stability and reliability. This limitation is purely hardware based and future robots that can afford more powerful systems would be able to utilise OpenSMILE feature extraction plus a classification model to determine emotions.
 
-\subsection{IBM Waston Performance}
+\subsection{Dataset}
 
-In this section, the performance of IBM Watson's Natural Language Understanding (NLU) service is evaluated in analysing the emotional content of various phrases. To ensure a robust assessment, each phrase was tested five times, and response times were recorded. The table \ref{tab:phrase_tests} presents the response times (in seconds) for each test run with ten different phrases shown in \ref{tab:phrases_emotions}.
+To assess the performance of IBM Watson's emotion recognition capabilities, a small, manually constructed dataset was developed (Table \ref{tab:phrases_emotions}). This dataset includes a series of short textual passages that are explicitly designed to express a specific, unambiguous emotion such as joy, sadness, anger, fear, or disgust. The intention behind using highly expressive phrases was to test the tool's ability to recognise clear emotional cues without ambiguity. This controlled setup allows for a straightforward comparison between the model's predicted output and the expected emotion label, thereby serving as a practical diagnostic tool for evaluating Watson's emotional classification.
+
+However, there are important limitations to this approach. Firstly, the dataset was not created through a standardised annotation process involving multiple human raters, meaning that there is no measure of inter-rater agreement to validate the assigned emotion labels. This limits the dataset's objectivity, as the emotion classification may reflect the creator's subjective interpretation. Additionally, the artificial nature of the examples may not reflect the linguistic ambiguity and variability present in natural language, potentially inflating Watson's apparent accuracy compared to real-world performance. Finally, it should be noted that IBM Watson imposes a usage limit on its Natural Language Understanding service. After a certain number of API calls, the free tier is exhausted and further requests will either require payment or return restricted output. This constraint makes it difficult to scale such experiments beyond a small sample size without incurring costs.
 
 \begin{table}[h!]
 \centering{}
@@ -529,6 +538,10 @@ The food at that restaurant was absolutely disgusting. The meat was undercooked,
 \label{tab:phrases_emotions}
 \end{table}
 \clearpage{}
+
+\subsection{IBM Waston Performance}
+
+In this section, the performance of IBM Watson's Natural Language Understanding (NLU) service is evaluated in analysing the emotional content of various phrases. To ensure a robust assessment, each phrase was tested five times, and response times were recorded. The table \ref{tab:phrase_tests} presents the response times (in seconds) for each test run with ten different phrases shown in \ref{tab:phrases_emotions}.
 
 \begin{table}[h!]
 \centering{}
