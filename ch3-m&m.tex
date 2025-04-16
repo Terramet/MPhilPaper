@@ -267,4 +267,32 @@ The Expressions in the Wild (ExpW) dataset was used to evaluate the performance 
 
 A selection of random images from ExpW can be seen in \ref{figure:exp_w_sample}.
 
+\subsection{Small Sentiment Dataset}
 
+To evaluate the performance of IBM Watson's text-based emotion recognition, a small ad-hoc dataset was constructed. This dataset consists of ten manually written phrases, each designed to strongly reflect a specific emotional state: joy, sadness, anger, fear, or disgust. The phrases range from short, direct expressions to longer, more context-rich scenarios. This approach was chosen due to its flexibility and control, allowing for tailored testing of Watson's ability to identify clearly defined emotional content across varying text lengths and complexity.
+
+The main goal of this dataset was not to replicate large-scale sentiment corpora but to conduct a focused, qualitative probe into Watson's classification behaviour. Given the service's limits on free-tier usage, a small dataset was both practical and sufficient for demonstrating trends in how Watson interprets emotional tone.
+
+This method also enabled direct comparison between the system's predictions and a known, human-assigned ground truth. While the dataset is limited in scale, its controlled design supports clear interpretability of results and highlights how well Watson performs under idealised textual conditions.
+
+\begin{table}[h!]
+\centering{}
+\caption{Phrases and their expected emotions}
+\begin{tabular}{|p{9cm}|c|}
+\hline
+\textbf{Text} & \textbf{Expected Emotion} \\ \hline
+I am so happy today! Everything is going great. & Joy \\ \hline
+I am very sad and disappointed by the news. & Sadness \\ \hline
+I am so angry at the situation! & Anger \\ \hline
+This is so scary and frightening. & Fear \\ \hline
+I am just so disgusted by what happened. & Disgust \\ \hline
+The sun is shining and the birds are singing. It's a beautiful day to be alive. I feel so grateful for all the wonderful things in my life. I have a loving family, great friends, and a job that I am passionate about. Days like today make me feel like all the hard work has paid off and I can truly appreciate the beauty of life. & Joy \\ \hline
+Today I received some heartbreaking news. A dear friend of mine passed away unexpectedly. The shock and sorrow I feel are overwhelming. We had so many plans together, so many dreams left unfulfilled. It's hard to imagine life without them. This loss leaves a void that can never be filled. & Sadness \\ \hline
+I am furious about the latest policy changes at work. They were implemented without any consultation with the staff, and they make our jobs much harder. It feels like management doesn't care about our well-being or input. This kind of disregard is unacceptable, and I won't stand for it. & Anger \\ \hline
+Walking through the dark alley, I could feel my heart racing. Every sound seemed amplified, and the shadows looked like they were moving. I couldn't shake the feeling that someone was following me. It was one of the most terrifying experiences I've ever had. I just wanted to get out of there as quickly as possible. & Fear \\ \hline
+The food at that restaurant was absolutely disgusting. The meat was undercooked, the vegetables were soggy, and there was a strange smell coming from the kitchen. I felt nauseous just being there. It's unacceptable to serve such poor quality food to customers. & Disgust \\ \hline
+\end{tabular}
+\label{tab:phrases_emotions}
+\end{table}
+
+\clearpage{}

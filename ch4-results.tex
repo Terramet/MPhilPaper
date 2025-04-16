@@ -512,33 +512,6 @@ Moreover, OpenSMILE is designed for real-time processing of audio streams, makin
 
 OpenSMILE facilitates the integration of extracted features with machine learning algorithms, serving as a crucial preprocessing step for tasks such as classification. The features computed by OpenSMILE capture essential characteristics of audio signals, enabling accurate modelling and interpretation of audio data. However, given the limited resources available on a robotic platform, it could run into performance issues that severely limit its capabilities. The memory requirements of OpenSMILE can also be significant, particularly when extracting a large number of features from lengthy audio streams, with each feature set taking up to 100MB for a short 18-second audio clip. Robotics platforms typically have limited memory capacity, and allocating resources to OpenSMILE may strain the system, potentially impacting overall system stability and reliability. This limitation is purely hardware based and future robots that can afford more powerful systems would be able to utilise OpenSMILE feature extraction plus a classification model to determine emotions.
 
-\subsection{Dataset}
-
-To assess the performance of IBM Watson's emotion recognition capabilities, a small, manually constructed dataset was developed (Table \ref{tab:phrases_emotions}). This dataset includes a series of short textual passages that are explicitly designed to express a specific, unambiguous emotion such as joy, sadness, anger, fear, or disgust. The intention behind using highly expressive phrases was to test the tool's ability to recognise clear emotional cues without ambiguity. This controlled setup allows for a straightforward comparison between the model's predicted output and the expected emotion label, thereby serving as a practical diagnostic tool for evaluating Watson's emotional classification.
-
-However, there are important limitations to this approach. Firstly, the dataset was not created through a standardised annotation process involving multiple human raters, meaning that there is no measure of inter-rater agreement to validate the assigned emotion labels. This limits the dataset's objectivity, as the emotion classification may reflect the creator's subjective interpretation. Additionally, the artificial nature of the examples may not reflect the linguistic ambiguity and variability present in natural language, potentially inflating Watson's apparent accuracy compared to real-world performance. Finally, it should be noted that IBM Watson imposes a usage limit on its Natural Language Understanding service. After a certain number of API calls, the free tier is exhausted and further requests will either require payment or return restricted output. This constraint makes it difficult to scale such experiments beyond a small sample size without incurring costs.
-
-\begin{table}[h!]
-\centering{}
-\caption{Phrases and their expected emotions}
-\begin{tabular}{|p{9cm}|c|}
-\hline
-\textbf{Text} & \textbf{Expected Emotion} \\ \hline
-I am so happy today! Everything is going great. & Joy \\ \hline
-I am very sad and disappointed by the news. & Sadness \\ \hline
-I am so angry at the situation! & Anger \\ \hline
-This is so scary and frightening. & Fear \\ \hline
-I am just so disgusted by what happened. & Disgust \\ \hline
-The sun is shining and the birds are singing. It's a beautiful day to be alive. I feel so grateful for all the wonderful things in my life. I have a loving family, great friends, and a job that I am passionate about. Days like today make me feel like all the hard work has paid off and I can truly appreciate the beauty of life. & Joy \\ \hline
-Today I received some heartbreaking news. A dear friend of mine passed away unexpectedly. The shock and sorrow I feel are overwhelming. We had so many plans together, so many dreams left unfulfilled. It's hard to imagine life without them. This loss leaves a void that can never be filled. & Sadness \\ \hline
-I am furious about the latest policy changes at work. They were implemented without any consultation with the staff, and they make our jobs much harder. It feels like management doesn't care about our well-being or input. This kind of disregard is unacceptable, and I won't stand for it. & Anger \\ \hline
-Walking through the dark alley, I could feel my heart racing. Every sound seemed amplified, and the shadows looked like they were moving. I couldn't shake the feeling that someone was following me. It was one of the most terrifying experiences I've ever had. I just wanted to get out of there as quickly as possible. & Fear \\ \hline
-The food at that restaurant was absolutely disgusting. The meat was undercooked, the vegetables were soggy, and there was a strange smell coming from the kitchen. I felt nauseous just being there. It's unacceptable to serve such poor quality food to customers. & Disgust \\ \hline
-\end{tabular}
-\label{tab:phrases_emotions}
-\end{table}
-\clearpage{}
-
 \subsection{IBM Waston Performance}
 
 In this section, the performance of IBM Watson's Natural Language Understanding (NLU) service is evaluated in analysing the emotional content of various phrases. To ensure a robust assessment, each phrase was tested five times, and response times were recorded. The table \ref{tab:phrase_tests} presents the response times (in seconds) for each test run with ten different phrases shown in \ref{tab:phrases_emotions}.
