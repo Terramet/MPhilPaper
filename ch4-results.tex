@@ -113,7 +113,7 @@ In the context of face detection models like YOLO and Tiny YOLO, confidence scor
 
 Average Precision (AP) is a metric used to evaluate classification models, especially in imbalanced datasets. It summarises the precision-recall curve into a single value, reflecting the model's ability to balance precision and recall across thresholds. AP is calculated by first sorting the predicted scores in descending order, then computing precision and recall at each threshold. Precision measures the proportion of true positives among positive predictions, while recall shows the proportion of true positives among all actual positives.
 
-The area under the precision-recall curve (AUC) represents the AP, which can be calculated as:
+The AUC represents the AP, which can be calculated as:
 
 \[
 \text{AP} = \sum_n (R_n - R_{n-1}) P_n
